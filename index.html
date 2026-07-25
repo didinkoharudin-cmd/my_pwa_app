@@ -178,21 +178,13 @@
     table.amortization th { background-color: #1e40af; color: white; text-align: center; position: sticky; top: 0; }
     table.amortization tr:nth-child(even) { background-color: #f8fafc; }
 
-    /* CLASS KHUSUS PEMISAH HALAMAN UNTUK PDF */
-    .page-break {
-      page-break-before: always !important;
-      break-before: page !important;
-      margin-top: 10px;
+    /* CSS Khusus saat Download / Print PDF */
+    @media print {
+      body { background: white; margin: 0; padding: 0; }
+      .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break { display: none !important; }
+      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+      .result-box { display: block !important; }
     }
-
-    /*/* Area Khusus Cetak PDF */
-  #printEvaluasiArea {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    width: 100%;
-  }
   </style>
 </head>
 <body>
@@ -227,7 +219,7 @@
   </div>
 
   <div class="container" id="cetakArea">
-    <!-- HEADER HALAMAN 1 -->
+    <!-- HEADER HALAMAN SIMULASI -->
     <div class="pdf-header">
       <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
       <p>Analisa & Rincian Pencairan Bersih</p>
@@ -421,11 +413,11 @@
           <input type="text" id="admin" class="auto-field" oninput="formatRupiahInput(this)" value="200.000" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Tarif Provisi (% p.a Otomatis Tenor):</label>
+          <label style="color:#1e40af;">Biaya Provisi :</label>
           <input type="number" step="any" id="provisi" class="auto-field" value="0.2" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Tarif Asuransi:</label>
+          <label style="color:#1e40af;">Tarif Asuransi :</label>
           <input type="number" step="0.00001" id="tarifAsuransi" class="auto-field" value="0.00500" required>
         </div>
         <div class="form-group">
@@ -445,93 +437,103 @@
       </div>
     </form>
 
-    <!-- Area Hasil HALAMAN 1 -->
+    <!-- Area Hasil HALAMAN 1 (BAGIAN YANG DIPRINT KE PDF) -->
     <div class="result-box" id="ringkasan">
-      <div class="section-title">III. Hasil Evaluasi Kelayakan Kredit</div>
-      <div id="peringatanBup"></div>
-      <div id="statusBanner" class="status-banner"></div>
-
-      <div class="two-column">
-        <!-- Tabel Kiri: Analisis Kapasitas -->
-        <table class="pdf-table">
-          <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
-          <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
-          <tr><th>Gaji Bersih</th><td id="resGajiBersih" style="color:#1e40af;">-</td></tr>
-          <tr><th>Plafon Diajukan</th><td id="resPlafonDiajukan" style="color:#16a34a;">-</td></tr>
-          <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
-          <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
-          <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
-          <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
-          <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
-          <tr><th>Maksimal Tenor Diberikan</th><td id="resMaksTenor" class="highlight">-</td></tr>
-          <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
-          <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
-          <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
-          <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:#1e40af;">-</td></tr>
-          <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight">-</td></tr>
-          <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
-        </table>
-
-        <!-- Tabel Kanan: Rincian Potongan & Pencairan -->
-        <table class="pdf-table">
-          <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
-          <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
-          <tr id="rowResBungaDimuka" style="display:none; background:#fff7ed;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight">-</td></tr>
-          <tr id="rowResBungaGrace" style="display:none; background:#fff7ed;"><th>Akumulasi Bunga Grace Period (Dipotong Awal)</th><td id="resBungaGrace" class="highlight">-</td></tr>
-          <tr><th>Biaya Asuransi</th><td id="resAsuransi">-</td></tr>
-          <tr id="rowResAsuransiPenambah" style="display:none; background:#f0fdf4;"><th>Penambah Asuransi (+)</th><td id="resAsuransiPenambah" class="success">-</td></tr>
-          <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight">-</td></tr>
-          <tr class="row-pelunasan-res" style="background:#fff7ed;"><th>Pengembalian Biaya Asuransi (-)</th><td id="resPengembalianAsuransi" class="highlight">-</td></tr>
-          <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan">-</td></tr>
-          <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight">-</td></tr>
-          <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight">-</td></tr>
-          <tr style="background:#f0fdf4;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:13px;">-</td></tr>
-        </table>
-      </div>
-
-      <!-- Informasi Kontak Marketing -->
-      <div class="marketing-card">
-        <div class="marketing-info">
-          <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
-          <strong>Didin Koharudin</strong><br>
-          <span>No. HP / WhatsApp: <b>08111292999</b></span>
+      <!-- CONTAINER KHUSUS UNTUK AREA PRINT PDF -->
+      <div id="printEvaluasiArea">
+        <!-- Header Dokumen khusus PDF -->
+        <div class="pdf-header">
+          <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
+          <p>Analisa & Rincian Pencairan Bersih</p>
         </div>
-        <div style="text-align: right; color:#64748b; font-size: 10px;">
-          <span>Tanggal Simulasi:</span><br>
-          <strong id="tglSimulasi" style="color:#0f172a;">-</strong>
+
+        <div class="section-title">III. Hasil Evaluasi Kelayakan Kredit</div>
+        <div id="peringatanBup"></div>
+        <div id="statusBanner" class="status-banner"></div>
+
+        <div class="two-column">
+          <!-- Tabel Kiri: Analisis Kapasitas -->
+          <table class="pdf-table">
+            <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
+            <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
+            <tr><th>Gaji Bersih</th><td id="resGajiBersih" style="color:#1e40af;">-</td></tr>
+            <tr><th>Plafon Diajukan</th><td id="resPlafonDiajukan" style="color:#16a34a;">-</td></tr>
+            <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
+            <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
+            <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
+            <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
+            <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
+            <tr><th>Maksimal Tenor Diberikan</th><td id="resMaksTenor" class="highlight">-</td></tr>
+            <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
+            <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
+            <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
+            <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:#1e40af;">-</td></tr>
+            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight">-</td></tr>
+            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
+          </table>
+
+          <!-- Tabel Kanan: Rincian Potongan & Pencairan -->
+          <table class="pdf-table">
+            <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
+            <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
+            <tr id="rowResBungaDimuka" style="display:none; background:#fff7ed;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight">-</td></tr>
+            <tr id="rowResBungaGrace" style="display:none; background:#fff7ed;"><th>Akumulasi Bunga Grace Period (Dipotong Awal)</th><td id="resBungaGrace" class="highlight">-</td></tr>
+            <tr><th>Biaya Asuransi</th><td id="resAsuransi">-</td></tr>
+            <tr id="rowResAsuransiPenambah" style="display:none; background:#f0fdf4;"><th>Penambah Asuransi (+)</th><td id="resAsuransiPenambah" class="success">-</td></tr>
+            <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight">-</td></tr>
+            <tr class="row-pelunasan-res" style="background:#fff7ed;"><th>Pengembalian Biaya Asuransi (-)</th><td id="resPengembalianAsuransi" class="highlight">-</td></tr>
+            <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan">-</td></tr>
+            <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight">-</td></tr>
+            <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight">-</td></tr>
+            <tr style="background:#f0fdf4;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:13px;">-</td></tr>
+          </table>
+        </div>
+
+        <!-- Informasi Kontak Marketing -->
+        <div class="marketing-card">
+          <div class="marketing-info">
+            <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
+            <strong>Didin Koharudin</strong><br>
+            <span>No. HP / WhatsApp: <b>08111292999</b></span>
+          </div>
+          <div style="text-align: right; color:#64748b; font-size: 10px;">
+            <span>Tanggal Simulasi:</span><br>
+            <strong id="tglSimulasi" style="color:#0f172a;">-</strong>
+          </div>
+        </div>
+
+        <!-- Catatan Penjelasan (Notes) untuk PDF -->
+        <div class="pdf-footnote">
+          * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
         </div>
       </div>
 
-      <!-- Catatan Penjelasan (Notes) untuk PDF -->
-      <div class="pdf-footnote">
-        * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
+      <!-- AREA AMORTISASI (TIDAK IKUT DIDEKAP/DIPRINT KE PDF RINGKAS) -->
+      <div class="area-amortisasi">
+        <!-- HEADER HALAMAN 2 -->
+        <div class="pdf-header" style="margin-top: 25px;">
+          <h2>TABEL ANGSURAN KREDIT</h2>
+          <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
+        </div>
+
+        <!-- Tabel Amortisasi HALAMAN 2 -->
+        <div class="section-title">IV. Jadwal Pembayaran Angsuran Bulanan</div>
+        <div class="table-container" id="areaTabel">
+          <table class="amortization">
+            <thead>
+              <tr>
+                <th style="text-align:center;">Bulan</th>
+                <th>Angsuran (Rp)</th>
+                <th>Pokok (Rp)</th>
+                <th>Bunga (Rp)</th>
+                <th>Sisa Pokok (Rp)</th>
+              </tr>
+            </thead>
+            <tbody id="tabelBody"></tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- PEMISAH HALAMAN KHUSUS UNTUK PDF -->
-      <div class="page-break"></div>
-
-      <!-- HEADER HALAMAN 2 -->
-      <div class="pdf-header">
-        2. TABEL ANGSURAN KREDIT
-        <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
-      </div>
-
-      <!-- Tabel Amortisasi HALAMAN 2 -->
-      <div class="section-title">IV. Jadwal Pembayaran Angsuran Bulanan</div>
-      <div class="table-container" id="areaTabel">
-        <table class="amortization">
-          <thead>
-            <tr>
-              <th style="text-align:center;">Bulan</th>
-              <th>Angsuran (Rp)</th>
-              <th>Pokok (Rp)</th>
-              <th>Bunga (Rp)</th>
-              <th>Sisa Pokok (Rp)</th>
-            </tr>
-          </thead>
-          <tbody id="tabelBody"></tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
@@ -1471,7 +1473,7 @@
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT: Plafond Melebihi Limit RPC 85% Uang THT (${fmt.format(maksPlafondRpc)})`;
     } else if (isLolosGaji) {
       banner.className = "status-banner pass";
-      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK ";
+      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK (Lolos Limit RPC & Skema Pelunasan)";
     } else {
       banner.className = "status-banner fail";
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT (Rekomendasi Plafond Maksimal: ${fmt.format(maksPlafondRpc)})`;
@@ -1572,29 +1574,21 @@
     document.getElementById('btnDownloadPdf').style.display = 'inline-block';
   }
 
-  // --- FUNGSI DOWNLOAD PDF (Ditingkatkan agar tidak terpotong) ---
+  // --- FUNGSI DOWNLOAD PDF: KHUSUS BAGIAN HASIL EVALUASI & FOOTNOTE ---
   function downloadPDF() {
     const namaPegawai = document.getElementById('nama').value || 'Debitur';
+    
+    // Ambil elemen khusus area Evaluasi saja untuk diprint
     const element = document.getElementById('printEvaluasiArea');
 
-    // Pastikan scroll ke atas terlebih dahulu sebelum menangkap gambar
-    window.scrollTo(0, 0);
-
     const opt = {
-      margin:       [0.2, 0.2, 0.2, 0.2], // Margin A4 dalam inci
+      margin:       [0.3, 0.3, 0.3, 0.3],
       filename:     `Hasil_Evaluasi_Kredit_${namaPegawai.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { 
-        scale: 1.5,           // Skala stabil untuk resolusi A4
-        useCORS: true, 
-        logging: false,
-        scrollY: 0            // Memastikan area atas tidak terpotong
-      },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Mencegah tabel terpotong
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
-    // Jalankan ekspor PDF
     html2pdf().set(opt).from(element).save();
   }
 </script>
