@@ -185,14 +185,14 @@
       margin-top: 10px;
     }
 
-    /* CSS Khusus saat Download / Print PDF */
-    @media print {
-      body { background: white; margin: 0; padding: 0; }
-      .top-bar { display: none !important; }
-      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-      .table-container { max-height: none !important; overflow: visible !important; border: none; }
-      input, select { border: none; background: transparent; padding: 0; font-weight: bold; }
-    }
+    /*/* Area Khusus Cetak PDF */
+  #printEvaluasiArea {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    width: 100%;
+  }
   </style>
 </head>
 <body>
@@ -1572,29 +1572,30 @@
     document.getElementById('btnDownloadPdf').style.display = 'inline-block';
   }
 
+  // --- FUNGSI DOWNLOAD PDF (Ditingkatkan agar tidak terpotong) ---
   function downloadPDF() {
     const namaPegawai = document.getElementById('nama').value || 'Debitur';
-    const element = document.getElementById('cetakArea');
-    
-    const uploadBox = document.getElementById('uploadBox');
-    const actionButtons = document.getElementById('actionButtons');
-    
-    uploadBox.style.display = 'none';
-    actionButtons.style.display = 'none';
+    const element = document.getElementById('printEvaluasiArea');
+
+    // Pastikan scroll ke atas terlebih dahulu sebelum menangkap gambar
+    window.scrollTo(0, 0);
 
     const opt = {
-      margin:       [0.3, 0.3, 0.3, 0.3],
-      filename:     `Simulasi_Kredit_${namaPegawai.replace(/\s+/g, '_')}.pdf`,
+      margin:       [0.2, 0.2, 0.2, 0.2], // Margin A4 dalam inci
+      filename:     `Hasil_Evaluasi_Kredit_${namaPegawai.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      html2canvas:  { 
+        scale: 1.5,           // Skala stabil untuk resolusi A4
+        useCORS: true, 
+        logging: false,
+        scrollY: 0            // Memastikan area atas tidak terpotong
+      },
       jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Mencegah tabel terpotong
     };
 
-    html2pdf().set(opt).from(element).save().then(() => {
-      uploadBox.style.display = 'block';
-      actionButtons.style.display = 'flex';
-    });
+    // Jalankan ekspor PDF
+    html2pdf().set(opt).from(element).save();
   }
 </script>
 
