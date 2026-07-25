@@ -13,7 +13,104 @@
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f6f9; margin: 20px; color: #1e293b; }
     
-    .container { max-width: 900px; margin: auto; background: #fff; padding: 25px 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    /* --- CSS HALAMAN LOGIN --- */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+    .login-card {
+      background: #ffffff;
+      padding: 35px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .login-card h2 {
+      margin-top: 0;
+      color: #0f172a;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .login-card p {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 25px;
+    }
+    .login-group {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .login-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .login-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background-color: #1e3a8a; }
+    .error-msg {
+      color: #dc2626;
+      font-size: 11px;
+      background-color: #fef2f2;
+      border: 1px solid #fca5a5;
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    /* --- CSS UTAMA / DASHBOARD --- */
+    #mainApp { display: none; } /* Disembunyikan sebelum login */
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: -5px;
+    }
+    .user-info { font-size: 12px; }
+    .btn-logout {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-logout:hover { background: #b91c1c; }
+
+    .container { max-width: 900px; margin: auto; background: #fff; padding: 25px 30px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
     
     /* Header Dokumen PDF */
     .pdf-header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 18px; }
@@ -40,9 +137,9 @@
     input.highlight-auto { background-color: #f0fdf4; color: #15803d; border-color: #86efac; font-weight: bold; font-size: 13px; }
 
     .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-    button { flex: 1; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    button:hover { background-color: #1e3a8a; }
-    button.btn-pdf { background-color: #dc2626; display: none; }
+    button.btn-submit { flex: 1; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    button.btn-submit:hover { background-color: #1e3a8a; }
+    button.btn-pdf { background-color: #dc2626; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1; }
     button.btn-pdf:hover { background-color: #b91c1c; }
     button.btn-use-max { background-color: #16a34a; color: white; font-size: 10px; padding: 3px 6px; border-radius: 4px; border: none; margin-top: 4px; cursor: pointer; text-align: center; }
     button.btn-use-max:hover { background-color: #15803d; }
@@ -91,6 +188,7 @@
     /* CSS Khusus saat Download / Print PDF */
     @media print {
       body { background: white; margin: 0; padding: 0; }
+      .top-bar { display: none !important; }
       .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
       .table-container { max-height: none !important; overflow: visible !important; border: none; }
       input, select { border: none; background: transparent; padding: 0; font-weight: bold; }
@@ -99,297 +197,386 @@
 </head>
 <body>
 
-<div class="container" id="cetakArea">
-  <!-- HEADER HALAMAN 1 -->
-  <div class="pdf-header">
-    <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
-    <p>Analisa & Rincian Pencairan Bersih</p>
+<!-- ================= TAMPILAN 1: HALAMAN LOGIN ================= -->
+<div class="login-wrapper" id="loginPage">
+  <div class="login-card">
+    <h2>Login Sistem</h2>
+    <p>Simulasi Kredit Konsumer & Ritel Karawang</p>
+
+    <div class="error-msg" id="loginError">⚠️ Username atau Password salah!</div>
+
+    <form onsubmit="event.preventDefault(); prosesLogin();">
+      <div class="login-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Masukkan username..." required autocomplete="off">
+      </div>
+      <div class="login-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Masukkan password..." required>
+      </div>
+      <button type="submit" class="btn-login">Masuk ke Sistem</button>
+    </form>
   </div>
-  
-  <!-- Excel Upload Box -->
-  <div class="upload-box" id="uploadBox">
-    <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
-    <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
-    <span id="statusUpload" style="margin-left:8px; color:#64748b;">Belum ada file diunggah.</span>
+</div>
+
+<!-- ================= TAMPILAN 2: APLIKASI UTAMA ================= -->
+<div id="mainApp">
+  <div class="top-bar" id="topBarArea">
+    <div class="user-info">Selamat Datang, <strong id="loggedInUser">Admin</strong></div>
+    <button type="button" class="btn-logout" onclick="prosesLogout()">Logout 🚪</button>
   </div>
 
-  <form id="simulasiForm" onsubmit="event.preventDefault(); hitungSimulasi();">
-    <div class="section-title">I. Data Pemohon & Skema Pengajuan</div>
-    <div class="grid">
-      <div class="form-group">
-        <label style="color:#2563eb; font-weight:bold;">Tipe Pemohon:</label>
-        <select id="tipePemohon" onchange="updateSkemaDanParameter()" style="font-weight:bold; border-color:#2563eb;">
-          <option value="PNS Gaji" selected>PNS Gaji</option>
-          <option value="PPPK Gaji">PPPK Gaji</option>
-          <option value="PNS TPP">PNS TPP</option>
-          <option value="PNS TPG">PNS TPG</option>
-          <option value="PPPK TPP">PPPK TPP</option>
-          <option value="PPPK TPG">PPPK TPG</option>
-          <option value="Kredit THT">Kredit THT</option>
-          <option value="Prapurnabakti G2C">Prapurnabakti G2C</option>
-          <option value="Prapurnabakti G7G">Prapurnabakti G7G</option>
-          <option value="Anggota DPRD Gaji">Anggota DPRD Gaji</option>
-          <option value="TPG Non ASN">TPG Non ASN</option>
-          <option value="Pensiunan">Pensiunan</option>
-          <option value="TNI/Polri">TNI/Polri</option>
-          <option value="Swasta">Swasta</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label id="lblNip" style="color:#1e40af;">NIP Pegawai (Autofill): *</label>
-        <input type="text" id="nip" placeholder="Ketik NIP..." oninput="cariDataByNip()" onblur="cekNipExistOnBlur()" required>
-        <div class="nip-warning" id="warnNip">⚠️ NIP tidak ditemukan di database Excel. Silakan lanjutkan pengisian data secara manual.</div>
-      </div>
-      <div class="form-group">
-        <label style="color:#1e40af; font-weight:bold;">Nomor CIF (Autofill):</label>
-        <input type="text" id="cif" class="auto-field" placeholder="Otomatis dari Excel" readonly>
-      </div>
-      <div class="form-group">
-        <label>Nama Pemohon: *</label>
-        <input type="text" id="nama" required>
-      </div>
-      <div class="form-group">
-        <label id="lblDinas">Dinas / Instansi: *</label>
-        <input type="text" id="dinas" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#2563eb; font-weight:bold;">Jenis Pengajuan Kredit:</label>
-        <select id="jenisPengajuan" onchange="toggleJenisPengajuan()" style="font-weight:bold; border-color:#2563eb;">
-          <option value="NEW">Baru (New)</option>
-          <option value="TOPUP">Top Up / Suplesi</option>
-          <option value="MENGULANG" selected>Mengulang</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Tanggal Lahir:</label>
-        <input type="date" id="tglLahir" onchange="updateTarifAsuransiOtomatis(); hitungMaksimalTenorOtomatis(); hitungPlafondMaksimalOtomatis();" required>
-      </div>
-
-      <!-- KOLOM KHUSUS TANGGAL PENGANGKATAN PEGAWAI (G2C & G7G) -->
-      <div class="form-group" id="grpTglPengangkatan" style="display: none;">
-        <label style="color:#2563eb; font-weight:bold;">Tanggal Pengangkatan Pegawai:</label>
-        <input type="date" id="tglPengangkatan">
-      </div>
-
-      <div class="form-group">
-        <label>Batas Usia Pensiun (BUP):</label>
-        <select id="bup" onchange="hitungMaksimalTenorOtomatis(); hitungPlafondMaksimalOtomatis();">
-          <option value="58">58 Tahun</option>
-          <option value="60">60 Tahun</option>
-          <option value="65">65 Tahun</option>
-        </select>
-      </div>
-
-      <!-- KOLOM KHUSUS GAJI POKOK / TIF (G2C & G7G) -->
-      <div class="form-group" id="grpGajiPokokTif" style="display: none;">
-        <label style="color:#16a34a; font-weight:bold;">Gaji Pokok / TIF (Rp): *</label>
-        <input type="text" id="gajiPokokTif" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
-      </div>
-
-      <!-- KOLOM KHUSUS PERKIRAAN THT (KREDIT THT) -->
-      <div class="form-group" id="grpPerkiraanTht" style="display: none;">
-        <label style="color:#d97706; font-weight:bold;">Perkiraan Uang THT (Rp): *</label>
-        <input type="text" id="perkiraanTht" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
-      </div>
-
-      <div class="form-group">
-        <label id="lblGaji">Gaji Bersih / Bulan (Rp): *</label>
-        <input type="text" id="gaji" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#2563eb; font-weight:bold;">Maks. Persentase RPC (% Otomatis):</label>
-        <input type="number" step="any" id="persenGaji" class="auto-field" value="90" min="1" max="100" oninput="hitungPlafondMaksimalOtomatis();" required>
-      </div>
-    </div>
-
-    <div class="section-title">II. Parameter Pinjaman & Pelunasan</div>
-    <div class="grid">
-      <div class="form-group" id="grpAngsuranLama">
-        <label>Angsuran Lama / Eksisting (Rp):</label>
-        <input type="text" id="angsuranEksisting" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" value="0">
-      </div>
-      
-      <div class="form-group grp-pelunasan" id="grpSisaPokok">
-        <label style="color:#b91c1c;">Sisa Pokok Eksisting (Rp):</label>
-        <input type="text" id="sisaPokokEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
-      </div>
-      <div class="form-group grp-pelunasan" id="grpBungaBerjalan">
-        <label style="color:#b91c1c;">Bunga Berjalan Eksisting (Rp):</label>
-        <input type="text" id="bungaBerjalanEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
-      </div>
-
-      <!-- PENGEMBALIAN BIAYA ASURANSI (KHUSUS MENGULANG) -->
-      <div class="form-group grp-pelunasan" id="grpPengembalianAsuransi">
-        <label style="color:#16a34a; font-weight:bold;">Pengembalian Biaya Asuransi (Rp):</label>
-        <input type="text" id="pengembalianAsuransi" oninput="formatRupiahInput(this)" value="0" placeholder="0">
-      </div>
-
-      <!-- HASIL OTO-COMPUTE PLAFOND MAKSIMAL -->
-      <div class="form-group">
-        <label style="color:#15803d; font-weight:bold;">✨ Plafond Maksimal (RPC Otomatis):</label>
-        <input type="text" id="plafondMaksimalOtomatis" class="auto-field highlight-auto" value="Rp 0" readonly>
-        <button type="button" class="btn-use-max" onclick="gunakanPlafondMaksimal()">↙️ Gunakan Plafond Maksimal</button>
-      </div>
-
-      <div class="form-group">
-        <label>Plafon Diajukan (Rp):</label>
-        <input type="text" id="pinjaman" value="50.000.000" oninput="formatRupiahInput(this); updateBiayaAdminOtomatis(); updateProvisiOtomatis(); checkBiayaNotarisVisibility();" required>
-      </div>
-
-      <!-- KOLOM KHUSUS BIAYA NOTARIS (Tampil Otomatis jika Plafond >= 500 Juta) -->
-      <div class="form-group" id="grpBiayaNotaris" style="display: none;">
-        <label style="color:#dc2626; font-weight:bold;">Biaya Notaris (Rp) [Plafond ≥ 500Jt]:</label>
-        <input type="text" id="biayaNotaris" oninput="formatRupiahInput(this)" value="0" placeholder="0">
-      </div>
-
-      <!-- FIELD BUNGA PERTAHUN EDITABLE -->
-      <div class="form-group">
-        <label style="color:#1e40af;">Bunga Dasar / Tahun (%):</label>
-        <input type="number" step="any" id="bunga" value="12.5" oninput="hitungPlafondMaksimalOtomatis();" required>
-      </div>
-
-      <div class="form-group">
-        <label style="color:#2563eb; font-weight:bold;">Program Asuransi:</label>
-        <select id="progAsuransi" onchange="toggleProgAsuransi(); hitungPlafondMaksimalOtomatis();" style="font-weight:bold;">
-          <option value="DENGAN">Dengan Program Asuransi</option>
-          <option value="TANPA" selected>Tanpa Program Asuransi</option>
-        </select>
-      </div>
-
-      <div class="form-group" id="grpSpreadBunga" style="display: none;">
-        <label style="color:#d97706; font-weight:bold;">Spread Bunga Asuransi (%):</label>
-        <input type="number" step="any" id="spreadBunga" value="0.85" oninput="hitungPlafondMaksimalOtomatis();">
-      </div>
-
-      <!-- KOLOM MAKSIMAL TENOR BERDASARKAN SKEMA UTAMA -->
-      <div class="form-group">
-        <label style="color:#dc2626; font-weight:bold;">Maksimal Tenor (Tipe, Usia & BUP):</label>
-        <input type="text" id="maksTenorDisplay" class="auto-field" style="color:#dc2626; font-weight:bold;" value="300 Bulan" readonly>
-      </div>
-
-      <div class="form-group">
-        <label>Tenor Diajukan (Bulan):</label>
-        <input type="number" id="tenor" value="38" oninput="validasiInputTenor(); updateProvisiOtomatis(); hitungPlafondMaksimalOtomatis();" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#1e40af;">Biaya Administrasi (Otomatis Tiering):</label>
-        <input type="text" id="admin" class="auto-field" oninput="formatRupiahInput(this)" value="200.000" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#1e40af;">Tarif Provisi (% p.a Otomatis Tenor):</label>
-        <input type="number" step="any" id="provisi" class="auto-field" value="0.2" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#1e40af;">Tarif Asuransi (Otomatis Usia Roundup):</label>
-        <input type="number" step="0.00001" id="tarifAsuransi" class="auto-field" value="0.00500" required>
-      </div>
-      <div class="form-group">
-        <label style="color:#1e40af; font-weight:bold;">Setoran Tabungan Wajib (Otomatis):</label>
-        <select id="multiplierTabungan" style="font-weight:bold;" class="auto-field">
-          <option value="0">Tidak Ada (0x Angsuran)</option>
-          <option value="1" selected>1x Angsuran</option>
-          <option value="2">2x Angsuran</option>
-          <option value="3">3x Angsuran</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="btn-group" id="actionButtons">
-      <button type="submit">Hitung Simulasi & Evaluasi Limit</button>
-      <button type="button" class="btn-pdf" id="btnDownloadPdf" onclick="downloadPDF()">📄 Download PDF Ringkas</button>
-    </div>
-  </form>
-
-  <!-- Area Hasil HALAMAN 1 -->
-  <div class="result-box" id="ringkasan">
-    <div class="section-title">III. Hasil Evaluasi Kelayakan Kredit</div>
-    <div id="peringatanBup"></div>
-    <div id="statusBanner" class="status-banner"></div>
-
-    <div class="two-column">
-      <!-- Tabel Kiri: Analisis Kapasitas -->
-      <table class="pdf-table">
-        <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
-        <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
-        <tr id="rowResTglPengangkatan" style="display:none;"><th>Tgl. Pengangkatan Pegawai</th><td id="resTglPengangkatan" style="color:#1e40af;">-</td></tr>
-        <tr id="rowResGajiPokokTif" style="display:none;"><th>Gaji Pokok / TIF</th><td id="resGajiPokokTif" style="color:#16a34a;">-</td></tr>
-        <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
-        <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
-        <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
-        <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
-        <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
-        <tr><th>Maksimal Tenor Diberikan</th><td id="resMaksTenor" class="highlight">-</td></tr>
-        <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
-        <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
-        <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
-        <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:#1e40af;">-</td></tr>
-        <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight">-</td></tr>
-        <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
-      </table>
-
-      <!-- Tabel Kanan: Rincian Potongan & Pencairan -->
-      <table class="pdf-table">
-        <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
-        <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
-        <tr id="rowResBungaDimuka" style="display:none; background:#fff7ed;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight">-</td></tr>
-        <tr><th>Biaya Asuransi</th><td id="resAsuransi">-</td></tr>
-        <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight">-</td></tr>
-        <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan">-</td></tr>
-        <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight">-</td></tr>
-        <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight">-</td></tr>
-        <!-- HASIL PENAMBAHAN PENGEMBALIAN BIAYA ASURANSI -->
-        <tr class="row-pelunasan-res" style="background:#f0fdf4;"><th>Pengembalian Biaya Asuransi (+)</th><td id="resPengembalianAsuransi" class="success">-</td></tr>
-        <tr style="background:#f0fdf4;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:13px;">-</td></tr>
-      </table>
-    </div>
-
-    <!-- Informasi Kontak Marketing -->
-    <div class="marketing-card">
-      <div class="marketing-info">
-        <span style="color:#64748b;">Petugas Marketing / Account Officer:</span><br>
-        <strong>Didin Koharudin</strong><br>
-        <span>No. HP / WhatsApp: <b>08111292999</b></span>
-      </div>
-      <div style="text-align: right; color:#64748b; font-size: 10px;">
-        <span>Tanggal Simulasi:</span><br>
-        <strong id="tglSimulasi" style="color:#0f172a;">-</strong>
-      </div>
-    </div>
-
-    <!-- Catatan Penjelasan (Notes) untuk PDF -->
-    <div class="pdf-footnote">
-      * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
-    </div>
-
-    <!-- PEMISAH HALAMAN KHUSUS UNTUK PDF -->
-    <div class="page-break"></div>
-
-    <!-- HEADER HALAMAN 2 -->
+  <div class="container" id="cetakArea">
+    <!-- HEADER HALAMAN 1 -->
     <div class="pdf-header">
-      2. TABEL AMORTISASI ANGSURAN KREDIT
-      <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
+      <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
+      <p>Analisa & Rincian Pencairan Bersih</p>
+    </div>
+    
+    <!-- Excel Upload Box -->
+    <div class="upload-box" id="uploadBox">
+      <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
+      <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
+      <span id="statusUpload" style="margin-left:8px; color:#64748b;">Belum ada file diunggah.</span>
     </div>
 
-    <!-- Tabel Amortisasi HALAMAN 2 -->
-    <div class="section-title">IV. Jadwal Pembayaran Angsuran Bulanan</div>
-    <div class="table-container" id="areaTabel">
-      <table class="amortization">
-        <thead>
-          <tr>
-            <th style="text-align:center;">Bulan</th>
-            <th>Angsuran (Rp)</th>
-            <th>Pokok (Rp)</th>
-            <th>Bunga (Rp)</th>
-            <th>Sisa Pokok (Rp)</th>
-          </tr>
-        </thead>
-        <tbody id="tabelBody"></tbody>
-      </table>
+    <form id="simulasiForm" onsubmit="event.preventDefault(); hitungSimulasi();">
+      <div class="section-title">I. Data Pemohon & Skema Pengajuan</div>
+      <div class="grid">
+        <div class="form-group">
+          <label style="color:#2563eb; font-weight:bold;">Tipe Pemohon:</label>
+          <select id="tipePemohon" onchange="updateSkemaDanParameter()" style="font-weight:bold; border-color:#2563eb;">
+            <option value="PNS Gaji" selected>PNS Gaji</option>
+            <option value="PPPK Gaji">PPPK Gaji</option>
+            <option value="PNS TPP">PNS TPP</option>
+            <option value="PNS TPG">PNS TPG</option>
+            <option value="PPPK TPP">PPPK TPP</option>
+            <option value="PPPK TPG">PPPK TPG</option>
+            <option value="Kredit THT">Kredit THT</option>
+            <option value="Prapurnabakti G2C">Prapurnabakti G2C</option>
+            <option value="Prapurnabakti G7G">Prapurnabakti G7G</option>
+            <option value="Anggota DPRD Gaji">Anggota DPRD Gaji</option>
+            <option value="TPG Non ASN">TPG Non ASN</option>
+            <option value="Pensiunan">Pensiunan</option>
+            <option value="TNI/Polri">TNI/Polri</option>
+            <option value="Swasta">Swasta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label id="lblNip" style="color:#1e40af;">NIP Pegawai (Autofill): *</label>
+          <input type="text" id="nip" placeholder="Ketik NIP..." oninput="cariDataByNip()" onblur="cekNipExistOnBlur()" required>
+          <div class="nip-warning" id="warnNip">⚠️ NIP tidak ditemukan di database Excel. Silakan lanjutkan pengisian data secara manual.</div>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af; font-weight:bold;">Nomor CIF (Autofill):</label>
+          <input type="text" id="cif" class="auto-field" placeholder="Otomatis dari Excel" readonly>
+        </div>
+        <div class="form-group">
+          <label>Nama Pemohon: *</label>
+          <input type="text" id="nama" required>
+        </div>
+        <div class="form-group">
+          <label id="lblDinas">Dinas / Instansi: *</label>
+          <input type="text" id="dinas" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#2563eb; font-weight:bold;">Jenis Pengajuan Kredit:</label>
+          <select id="jenisPengajuan" onchange="toggleJenisPengajuan()" style="font-weight:bold; border-color:#2563eb;">
+            <option value="NEW">Baru (New)</option>
+            <option value="TOPUP">Top Up / Suplesi</option>
+            <option value="MENGULANG" selected>Mengulang</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Lahir:</label>
+          <input type="date" id="tglLahir" onchange="updateTarifAsuransiOtomatis(); hitungMaksimalTenorOtomatis(); hitungPlafondMaksimalOtomatis();" required>
+        </div>
+
+        <!-- KOLOM KHUSUS TANGGAL PENGANGKATAN PEGAWAI (G2C & G7G) -->
+        <div class="form-group" id="grpTglPengangkatan" style="display: none;">
+          <label style="color:#2563eb; font-weight:bold;">Tanggal Pengangkatan Pegawai:</label>
+          <input type="date" id="tglPengangkatan">
+        </div>
+
+        <div class="form-group">
+          <label>Batas Usia Pensiun (BUP):</label>
+          <select id="bup" onchange="hitungMaksimalTenorOtomatis(); hitungPlafondMaksimalOtomatis();">
+            <option value="58">58 Tahun</option>
+            <option value="60">60 Tahun</option>
+            <option value="65">65 Tahun</option>
+            <option value="70">70 Tahun</option>
+          </select>
+        </div>
+
+        <!-- KOLOM KHUSUS GAJI POKOK / TIF (G2C & G7G) -->
+        <div class="form-group" id="grpGajiPokokTif" style="display: none;">
+          <label style="color:#16a34a; font-weight:bold;">Gaji Pokok (Rp): *</label>
+          <input type="text" id="gajiPokokTif" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
+        </div>
+
+        <!-- KOLOM KHUSUS PERKIRAAN THT (KREDIT THT) -->
+        <div class="form-group" id="grpPerkiraanTht" style="display: none;">
+          <label style="color:#d97706; font-weight:bold;">Perkiraan Uang THT (Rp): *</label>
+          <input type="text" id="perkiraanTht" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
+        </div>
+
+        <div class="form-group">
+          <label id="lblGaji">Gaji Bersih / Bulan (Rp): *</label>
+          <input type="text" id="gaji" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#2563eb; font-weight:bold;">Maks. Persentase RPC (% Otomatis):</label>
+          <input type="number" step="any" id="persenGaji" class="auto-field" value="90" min="1" max="100" oninput="hitungPlafondMaksimalOtomatis();" required>
+        </div>
+      </div>
+
+      <div class="section-title">II. Parameter Pinjaman & Pelunasan</div>
+      <div class="grid">
+        <div class="form-group" id="grpAngsuranLama">
+          <label>Angsuran Lama / Eksisting (Rp):</label>
+          <input type="text" id="angsuranEksisting" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" value="0">
+        </div>
+        
+        <div class="form-group grp-pelunasan" id="grpSisaPokok">
+          <label style="color:#b91c1c;">Sisa Pokok Eksisting (Rp):</label>
+          <input type="text" id="sisaPokokEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
+        </div>
+        <div class="form-group grp-pelunasan" id="grpBungaBerjalan">
+          <label style="color:#b91c1c;">Bunga Berjalan Eksisting (Rp):</label>
+          <input type="text" id="bungaBerjalanEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
+        </div>
+
+        <!-- PENGEMBALIAN BIAYA ASURANSI (SEBAGAI PENGURANG) -->
+        <div class="form-group grp-pelunasan" id="grpPengembalianAsuransi">
+          <label style="color:#b91c1c; font-weight:bold;">Pengembalian Biaya Asuransi (Rp):</label>
+          <input type="text" id="pengembalianAsuransi" oninput="formatRupiahInput(this)" value="0" placeholder="0">
+        </div>
+
+        <!-- HASIL OTO-COMPUTE PLAFOND MAKSIMAL -->
+        <div class="form-group">
+          <label style="color:#15803d; font-weight:bold;">✨ Plafond Maksimal (RPC Otomatis):</label>
+          <input type="text" id="plafondMaksimalOtomatis" class="auto-field highlight-auto" value="Rp 0" readonly>
+          <button type="button" class="btn-use-max" onclick="gunakanPlafondMaksimal()">↙️ Gunakan Plafond Maksimal</button>
+        </div>
+
+        <div class="form-group">
+          <label>Plafon Diajukan (Rp):</label>
+          <input type="text" id="pinjaman" value="50.000.000" oninput="formatRupiahInput(this); updateBiayaAdminOtomatis(); updateProvisiOtomatis(); checkBiayaNotarisVisibility();" required>
+        </div>
+
+        <!-- KOLOM KHUSUS BIAYA NOTARIS (Tampil Otomatis jika Plafond >= 500 Juta) -->
+        <div class="form-group" id="grpBiayaNotaris" style="display: none;">
+          <label style="color:#dc2626; font-weight:bold;">Biaya Notaris (Rp) [Plafond ≥ 500Jt]:</label>
+          <input type="text" id="biayaNotaris" oninput="formatRupiahInput(this)" value="0" placeholder="0">
+        </div>
+
+        <!-- FIELD BUNGA PERTAHUN EDITABLE -->
+        <div class="form-group">
+          <label style="color:#1e40af;" id="lblBunga">Bunga Dasar / Tahun (%):</label>
+          <input type="number" step="any" id="bunga" value="12.5" oninput="hitungPlafondMaksimalOtomatis();" required>
+        </div>
+
+        <!-- FIELD BUNGA KEDUA KHUSUS PRAPURNABAKTI G7G -->
+        <div class="form-group" id="grpBungaKedua" style="display: none;">
+          <label style="color:#d97706; font-weight:bold;">Bunga Saat Pensiun / Tahun (%):</label>
+          <input type="number" step="any" id="bungaKedua" value="13.5" oninput="hitungPlafondMaksimalOtomatis();" required>
+        </div>
+
+        <div class="form-group">
+          <label style="color:#2563eb; font-weight:bold;">Program Asuransi:</label>
+          <select id="progAsuransi" onchange="toggleProgAsuransi(); hitungPlafondMaksimalOtomatis();" style="font-weight:bold;">
+            <option value="DENGAN">Dengan Program Asuransi</option>
+            <option value="TANPA" selected>Tanpa Program Asuransi</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="grpSpreadBunga" style="display: none;">
+          <label style="color:#d97706; font-weight:bold;">Spread Bunga Asuransi (%):</label>
+          <input type="number" step="any" id="spreadBunga" value="0.85" oninput="hitungPlafondMaksimalOtomatis();">
+        </div>
+
+        <!-- OPSI PERSENTASE ASURANSI (MUNCUL JIKA PROGRAM ASURANSI DIPILIH "DENGAN") -->
+        <div class="form-group" id="grpPersenAsuransi" style="display: none;">
+          <label style="color:#16a34a; font-weight:bold;">Persentase Pengali Asuransi (% Penambah Nett):</label>
+          <select id="persenAsuransi" style="font-weight:bold; border-color:#16a34a;">
+            <option value="25">25% dari Biaya Asuransi</option>
+            <option value="50">50% dari Biaya Asuransi</option>
+            <option value="75">75% dari Biaya Asuransi</option>
+            <option value="100" selected>100% dari Biaya Asuransi</option>
+          </select>
+        </div>
+
+        <!-- KOLOM MAKSIMAL TENOR BERDASARKAN SKEMA UTAMA -->
+        <div class="form-group">
+          <label style="color:#dc2626; font-weight:bold;">Maksimal Tenor (Tipe, Usia & BUP):</label>
+          <input type="text" id="maksTenorDisplay" class="auto-field" style="color:#dc2626; font-weight:bold;" value="300 Bulan" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Tenor Diajukan (Bulan):</label>
+          <input type="number" id="tenor" value="38" oninput="validasiInputTenor(); updateProvisiOtomatis(); hitungPlafondMaksimalOtomatis();" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af;">Biaya Administrasi (Otomatis Tiering):</label>
+          <input type="text" id="admin" class="auto-field" oninput="formatRupiahInput(this)" value="200.000" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af;">Tarif Provisi (% p.a Otomatis Tenor):</label>
+          <input type="number" step="any" id="provisi" class="auto-field" value="0.2" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af;">Tarif Asuransi (Otomatis Usia Roundup):</label>
+          <input type="number" step="0.00001" id="tarifAsuransi" class="auto-field" value="0.00500" required>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af; font-weight:bold;">Setoran Tabungan Wajib (Otomatis):</label>
+          <select id="multiplierTabungan" style="font-weight:bold;" class="auto-field">
+            <option value="0">Tidak Ada (0x Angsuran)</option>
+            <option value="1" selected>1x Angsuran</option>
+            <option value="2">2x Angsuran</option>
+            <option value="3">3x Angsuran</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-group" id="actionButtons">
+        <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
+        <button type="button" class="btn-pdf" id="btnDownloadPdf" onclick="downloadPDF()">📄 Download PDF Ringkas</button>
+      </div>
+    </form>
+
+    <!-- Area Hasil HALAMAN 1 -->
+    <div class="result-box" id="ringkasan">
+      <div class="section-title">III. Hasil Evaluasi Kelayakan Kredit</div>
+      <div id="peringatanBup"></div>
+      <div id="statusBanner" class="status-banner"></div>
+
+      <div class="two-column">
+        <!-- Tabel Kiri: Analisis Kapasitas -->
+        <table class="pdf-table">
+          <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
+          <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
+          <tr id="rowResTglPengangkatan" style="display:none;"><th>Tgl. Pengangkatan Pegawai</th><td id="resTglPengangkatan" style="color:#1e40af;">-</td></tr>
+          <tr id="rowResGajiPokokTif" style="display:none;"><th>Gaji Pokok </th><td id="resGajiPokokTif" style="color:#16a34a;">-</td></tr>
+          <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
+          <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
+          <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
+          <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
+          <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
+          <tr><th>Maksimal Tenor Diberikan</th><td id="resMaksTenor" class="highlight">-</td></tr>
+          <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
+          <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
+          <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
+          <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:#1e40af;">-</td></tr>
+          <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight">-</td></tr>
+          <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
+        </table>
+
+        <!-- Tabel Kanan: Rincian Potongan & Pencairan -->
+        <table class="pdf-table">
+          <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
+          <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
+          <tr id="rowResBungaDimuka" style="display:none; background:#fff7ed;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight">-</td></tr>
+          <tr id="rowResBungaGrace" style="display:none; background:#fff7ed;"><th>Akumulasi Bunga Grace Period (Dipotong Awal)</th><td id="resBungaGrace" class="highlight">-</td></tr>
+          <tr><th>Biaya Asuransi</th><td id="resAsuransi">-</td></tr>
+          <tr id="rowResAsuransiPenambah" style="display:none; background:#f0fdf4;"><th>Penambah Asuransi (+)</th><td id="resAsuransiPenambah" class="success">-</td></tr>
+          <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight">-</td></tr>
+          <tr class="row-pelunasan-res" style="background:#fff7ed;"><th>Pengembalian Biaya Asuransi (-)</th><td id="resPengembalianAsuransi" class="highlight">-</td></tr>
+          <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan">-</td></tr>
+          <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight">-</td></tr>
+          <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight">-</td></tr>
+          <tr style="background:#f0fdf4;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:13px;">-</td></tr>
+        </table>
+      </div>
+
+      <!-- Informasi Kontak Marketing -->
+      <div class="marketing-card">
+        <div class="marketing-info">
+          <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
+          <strong>Didin Koharudin</strong><br>
+          <span>No. HP / WhatsApp: <b>08111292999</b></span>
+        </div>
+        <div style="text-align: right; color:#64748b; font-size: 10px;">
+          <span>Tanggal Simulasi:</span><br>
+          <strong id="tglSimulasi" style="color:#0f172a;">-</strong>
+        </div>
+      </div>
+
+      <!-- Catatan Penjelasan (Notes) untuk PDF -->
+      <div class="pdf-footnote">
+        * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
+      </div>
+
+      <!-- PEMISAH HALAMAN KHUSUS UNTUK PDF -->
+      <div class="page-break"></div>
+
+      <!-- HEADER HALAMAN 2 -->
+      <div class="pdf-header">
+        2. TABEL AMORTISASI ANGSURAN KREDIT
+        <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
+      </div>
+
+      <!-- Tabel Amortisasi HALAMAN 2 -->
+      <div class="section-title">IV. Jadwal Pembayaran Angsuran Bulanan</div>
+      <div class="table-container" id="areaTabel">
+        <table class="amortization">
+          <thead>
+            <tr>
+              <th style="text-align:center;">Bulan</th>
+              <th>Angsuran (Rp)</th>
+              <th>Pokok (Rp)</th>
+              <th>Bunga (Rp)</th>
+              <th>Sisa Pokok (Rp)</th>
+            </tr>
+          </thead>
+          <tbody id="tabelBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
+  // --- KREDENSIAL LOGIN DEFAULT ---
+  const validUsers = {
+    'admin': '123456',
+    'karawang': 'admin123'
+  };
+
+  function prosesLogin() {
+    const userIn = document.getElementById('username').value.trim().toLowerCase();
+    const passIn = document.getElementById('password').value;
+    const errBox = document.getElementById('loginError');
+
+    if (validUsers[userIn] && validUsers[userIn] === passIn) {
+      errBox.style.display = 'none';
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      document.getElementById('loggedInUser').innerText = userIn.toUpperCase();
+      
+      // Reset & Trigger Awal Aplikasi
+      updateSkemaDanParameter();
+      toggleJenisPengajuan();
+      toggleProgAsuransi();
+      updateBiayaAdminOtomatis();
+      updateProvisiOtomatis();
+      checkBiayaNotarisVisibility();
+      hitungMaksimalTenorOtomatis();
+      hitungPlafondMaksimalOtomatis();
+    } else {
+      errBox.style.display = 'block';
+    }
+  }
+
+  function prosesLogout() {
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+  }
+
   let databasePegawai = [];
   let nilaiPlafondMaksimalCalc = 0;
   let maksTenorSistem = 300; 
@@ -402,7 +589,6 @@
     maximumFractionDigits: 0 
   });
 
-  // PEMBARUAN: Batas maksimal Kredit THT diperbarui menjadi 38 bulan
   const batasTenorTipeMap = {
     'PNS Gaji': 300,
     'PNS TPP': 180,
@@ -415,7 +601,6 @@
     'Anggota DPRD Gaji': 60
   };
 
-  /* FUNGSI HITUNG SUKU BUNGA OTOMATIS BERDASARKAN PARAMETER TIPE & JENIS PENGAJUAN */
   function getSukuBungaOtomatis(tipe, jenis) {
     const isMengulang = (jenis === 'MENGULANG');
 
@@ -443,7 +628,6 @@
           return 11.0;
       }
     } else {
-      // Untuk Pengajuan Baru (NEW) & Top Up (TOPUP) -> Menggunakan Rate Dasar
       switch (tipe) {
         case "PNS Gaji":
           return 11.9;
@@ -498,23 +682,22 @@
         if (sisaBulanKeBup > minBulanAwal) {
           pesanValidasiAturanKhusus = `⚠️ <b>Prapurnabakti G2C:</b> Pengajuan paling cepat 10 tahun (120 bulan) sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
-        const sisaBulanKeUsia70 = (70 * 12) - totalBulanUsia;
-        maxUsiaSelesai = Math.max(0, sisaBulanKeUsia70);
+        const sisaBulanKeUsia6911 =( (69 * 12) + 11) - totalBulanUsia;
+        maxUsiaSelesai = Math.max(0, sisaBulanKeUsia6911);
       } 
       else if (tipe === 'Prapurnabakti G7G') {
         const minBulanAwal = 58;
         if (sisaBulanKeBup > minBulanAwal) {
           pesanValidasiAturanKhusus = `⚠️ <b>Prapurnabakti G7G:</b> Pengajuan paling cepat 58 bulan sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
-        const sisaBulanKeUsia70 = (70 * 12) - totalBulanUsia;
-        maxUsiaSelesai = Math.max(0, sisaBulanKeUsia70);
+        const sisaBulanKeUsia6911 = ((69 * 12) + 11)- totalBulanUsia;
+        maxUsiaSelesai = Math.max(0, sisaBulanKeUsia6911);
       } 
       else if (tipe === 'Kredit THT') {
         const minBulanAwal = 38;
         if (sisaBulanKeBup > minBulanAwal) {
           pesanValidasiAturanKhusus = `⚠️ <b>Kredit THT:</b> Pengajuan paling cepat 38 bulan sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
-        // PEMBARUAN: Maksimal Tenor Kredit THT adalah (Sisa Bulan ke BUP + 2 Bulan)
         maxUsiaSelesai = Math.max(0, sisaBulanKeBup + 2);
       } 
       else {
@@ -541,10 +724,12 @@
     const tipe = document.getElementById('tipePemohon').value;
     const jenis = document.getElementById('jenisPengajuan').value;
     const lblGaji = document.getElementById('lblGaji');
+    const lblBunga = document.getElementById('lblBunga');
 
     const grpTglPengangkatan = document.getElementById('grpTglPengangkatan');
     const grpGajiPokokTif = document.getElementById('grpGajiPokokTif');
     const grpPerkiraanTht = document.getElementById('grpPerkiraanTht');
+    const grpBungaKedua = document.getElementById('grpBungaKedua');
     const bungaInput = document.getElementById('bunga');
     const selectTabungan = document.getElementById('multiplierTabungan');
     const inputPersenGaji = document.getElementById('persenGaji');
@@ -557,6 +742,16 @@
       grpGajiPokokTif.style.display = 'none';
     }
 
+    if (tipe === 'Prapurnabakti G7G') {
+      grpBungaKedua.style.display = 'flex';
+      lblBunga.innerHTML = "Bunga Grace Period / Tahun (%):";
+      bungaInput.value = 12.5;
+    } else {
+      grpBungaKedua.style.display = 'none';
+      lblBunga.innerHTML = "Bunga Dasar / Tahun (%):";
+      bungaInput.value = getSukuBungaOtomatis(tipe, jenis); 
+    }
+
     if (tipe === 'Kredit THT') {
       grpPerkiraanTht.style.display = 'flex';
       bungaInput.value = 9.5; 
@@ -564,8 +759,9 @@
       inputPersenGaji.value = 85; 
     } else {
       grpPerkiraanTht.style.display = 'none';
-      // Mengisi Suku Bunga Otomatis sesuai Tipe & Jenis Pengajuan
-      bungaInput.value = getSukuBungaOtomatis(tipe, jenis); 
+      if (tipe !== 'Prapurnabakti G7G') {
+        bungaInput.value = getSukuBungaOtomatis(tipe, jenis); 
+      }
       
       const rpc60Types = ['PNS TPP', 'PPPK TPP'];
       if (rpc60Types.includes(tipe)) {
@@ -575,7 +771,9 @@
       }
     }
 
-    if (tipe.includes('TPP')) {
+    if (tipe === 'Prapurnabakti G7G') {
+      lblGaji.innerHTML = "Perkiraan Gaji Pensiun TIF / Bulan (Rp): *";
+    } else if (tipe.includes('TPP')) {
       lblGaji.innerHTML = "TPP Bersih / Bulan (Rp): *";
     } else if (tipe.includes('TPG')) {
       lblGaji.innerHTML = "TPG Bersih / Bulan (Rp): *";
@@ -622,10 +820,14 @@
   function toggleProgAsuransi() {
     const prog = document.getElementById('progAsuransi').value;
     const grpSpread = document.getElementById('grpSpreadBunga');
+    const grpPersenAsuransi = document.getElementById('grpPersenAsuransi');
+    
     if (prog === 'DENGAN') {
       grpSpread.style.display = 'flex';
+      grpPersenAsuransi.style.display = 'flex';
     } else {
       grpSpread.style.display = 'none';
+      grpPersenAsuransi.style.display = 'none';
       document.getElementById('spreadBunga').value = 0.85;
     }
     hitungPlafondMaksimalOtomatis();
@@ -724,12 +926,14 @@
     if (tenorBulan > maksTenorSistem) tenorBulan = maksTenorSistem;
 
     let bungaPertahun = parseFloat(document.getElementById('bunga').value) || 0;
+    let bungaKeduaPertahun = parseFloat(document.getElementById('bungaKedua').value) || 0;
     const progAsuransi = document.getElementById('progAsuransi').value;
     let spreadBunga = 0;
     if (progAsuransi === 'DENGAN') {
       spreadBunga = parseFloat(document.getElementById('spreadBunga').value) || 0;
     }
     const totalBungaEfektif = bungaPertahun + spreadBunga;
+    const totalBungaKeduaEfektif = bungaKeduaPertahun + spreadBunga;
 
     if (tipePemohon === 'Kredit THT') {
       const perkiraanTht = parseInputValue('perkiraanTht');
@@ -740,6 +944,27 @@
 
     const maksTotalAngsuranRpc = gaji * (persenGaji / 100);
     const kapasitasAngsuranBaru = Math.max(0, maksTotalAngsuranRpc - angsuranEksisting);
+
+    if (tipePemohon === 'Prapurnabakti G7G') {
+      const bupTahun = parseInt(document.getElementById('bup').value) || 58;
+      const tglLahir = document.getElementById('tglLahir').value;
+      let masaAktifBulan = ((bupTahun * 12) + 1) - hitungUsiaBulan(tglLahir);
+      if (masaAktifBulan < 0) masaAktifBulan = 0;
+      let graceMonths = Math.min(tenorBulan, masaAktifBulan);
+      let remainingMonthsAfterGrace = tenorBulan - graceMonths;
+
+      let i2 = (totalBungaKeduaEfektif / 100) / 12;
+
+      if (remainingMonthsAfterGrace > 0 && i2 > 0) {
+        nilaiPlafondMaksimalCalc = Math.floor(kapasitasAngsuranBaru * (Math.pow(1 + i2, remainingMonthsAfterGrace) - 1) / (i2 * Math.pow(1 + i2, remainingMonthsAfterGrace)));
+      } else if (remainingMonthsAfterGrace > 0) {
+        nilaiPlafondMaksimalCalc = Math.floor(kapasitasAngsuranBaru * remainingMonthsAfterGrace);
+      } else {
+        nilaiPlafondMaksimalCalc = 0;
+      }
+      document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
+      return;
+    }
 
     const i = (totalBungaEfektif / 100) / 12;
     const n = tenorBulan;
@@ -809,17 +1034,6 @@
     updateSkemaDanParameter();
   }
 
-  window.onload = function() {
-    updateSkemaDanParameter();
-    toggleJenisPengajuan();
-    toggleProgAsuransi();
-    updateBiayaAdminOtomatis();
-    updateProvisiOtomatis();
-    checkBiayaNotarisVisibility();
-    hitungMaksimalTenorOtomatis();
-    hitungPlafondMaksimalOtomatis();
-  };
-
   function cleanNumber(val) {
     if (val === undefined || val === null) return 0;
     let strVal = String(val).replace(/[^0-9.]/g, '');
@@ -886,7 +1100,9 @@
       if (valDinas) document.getElementById('dinas').value = valDinas;
 
       let keysGaji = [];
-      if (tipePemohon.includes('TPP')) {
+      if (tipePemohon === 'Prapurnabakti G7G') {
+        keysGaji = ['Gaji Pensiun', 'Gaji Pensiun TIF', 'Pensiun TIF', 'Perkiraan Gaji Pensiun', 'Gaji Pensiun / Bulan'];
+      } else if (tipePemohon.includes('TPP')) {
         keysGaji = ['TPP', 'Penghasilan TPP', 'Gaji TPP', 'Nominal TPP', 'TPP Bersih', 'Tunjangan TPP'];
       } else if (tipePemohon.includes('TPG')) {
         keysGaji = ['TPG', 'Penghasilan TPG', 'Gaji TPG', 'Nominal TPG', 'TPG Bersih', 'Tunjangan TPG'];
@@ -897,7 +1113,7 @@
       const valGaji = getValueByFlexibleKey(peg, keysGaji);
       if (valGaji !== null) setInputValueFormatted('gaji', cleanNumber(valGaji));
 
-      const valGajiPokok = getValueByFlexibleKey(peg, ['Gaji Pokok', 'GajiPokok', 'TIF', 'Gaji Pokok / TIF']);
+      const valGajiPokok = getValueByFlexibleKey(peg, ['Gaji Pokok', 'GajiPokok', 'TIF', 'Gaji Pokok ']);
       if (valGajiPokok !== null) setInputValueFormatted('gajiPokokTif', cleanNumber(valGajiPokok));
 
       const valTht = getValueByFlexibleKey(peg, ['Estimasi THT', 'Perkiraan THT', 'Nominal THT', 'THT', 'EstimasiTHT']);
@@ -946,11 +1162,9 @@
       const valBungaBerjalan = getValueByFlexibleKey(peg, keysBungaBerjalan);
       setInputValueFormatted('bungaBerjalanEksisting', valBungaBerjalan !== null ? cleanNumber(valBungaBerjalan) : 0);
 
-      // Autofill Pengembalian Biaya Asuransi dari Excel jika ada
       const valReturnAsuransi = getValueByFlexibleKey(peg, ['Pengembalian Asuransi', 'PengembalianAsuransi', 'Restitusi Asuransi', 'Return Asuransi']);
       if (valReturnAsuransi !== null) setInputValueFormatted('pengembalianAsuransi', cleanNumber(valReturnAsuransi));
 
-      // Autofill Biaya Notaris dari Excel jika ada
       const valNotaris = getValueByFlexibleKey(peg, ['Biaya Notaris', 'Notaris', 'BiayaNotaris', 'Biaya Notariat']);
       if (valNotaris !== null) setInputValueFormatted('biayaNotaris', cleanNumber(valNotaris));
 
@@ -1023,25 +1237,26 @@
     if (jenisPengajuan === 'MENGULANG') {
       sisaPokokEks = parseInputValue('sisaPokokEksisting');
       bungaBerjalanEks = parseInputValue('bungaBerjalanEksisting');
-      retAsuransi = parseInputValue('pengembalianAsuransi');
+      retAsuransi = parseInputValue('pengembalianAsuransi'); 
     }
     const totalPelunasanEksisting = sisaPokokEks + bungaBerjalanEks;
 
     const pokokPinjaman = parseInputValue('pinjaman');
     
-    // HITUNG BIAYA NOTARIS JIKA PLAFOND >= 500.000.000
     let biayaNotaris = 0;
     if (pokokPinjaman >= 500000000) {
       biayaNotaris = parseInputValue('biayaNotaris');
     }
 
     let bungaPertahun = parseFloat(document.getElementById('bunga').value) || 0;
+    let bungaKeduaPertahun = parseFloat(document.getElementById('bungaKedua').value) || 0;
     const progAsuransi = document.getElementById('progAsuransi').value;
     let spreadBunga = 0;
     if (progAsuransi === 'DENGAN') {
       spreadBunga = parseFloat(document.getElementById('spreadBunga').value) || 0;
     }
     const totalBungaEfektif = bungaPertahun + spreadBunga;
+    const totalBungaKeduaEfektif = bungaKeduaPertahun + spreadBunga;
 
     let tenorBulan = parseInt(document.getElementById('tenor').value) || 0;
 
@@ -1072,6 +1287,7 @@
     }
 
     let totalBungaDimuka = 0;
+    let totalBungaGraceDipotongAwal = 0;
     let angsuranBaru = 0;
     let maksTotalAngsuranRpc = 0;
     let kapasitasAngsuranBaru = 0;
@@ -1092,8 +1308,46 @@
 
       document.getElementById('rowResBungaDimuka').style.display = 'table-row';
       document.getElementById('resBungaDimuka').innerText = fmt.format(totalBungaDimuka);
+      document.getElementById('rowResBungaGrace').style.display = 'none';
+    } else if (tipePemohon === 'Prapurnabakti G7G') {
+      document.getElementById('rowResBungaDimuka').style.display = 'none';
+      
+      maksTotalAngsuranRpc = gaji * (persenGaji / 100);
+      kapasitasAngsuranBaru = Math.max(0, maksTotalAngsuranRpc - angsuranEksisting);
+
+      let masaAktifBulan = (totalBulanBup + 1) - totalBulanUsia;
+      if (masaAktifBulan < 0) masaAktifBulan = 0;
+      let graceMonths = Math.min(tenorBulan, masaAktifBulan);
+      let remainingMonthsAfterGrace = tenorBulan - graceMonths;
+
+      let i1 = totalBungaEfektif / 100 / 12;
+      let i2 = totalBungaKeduaEfektif / 100 / 12;
+
+      totalBungaGraceDipotongAwal = pokokPinjaman * i1 * graceMonths;
+
+      if (remainingMonthsAfterGrace > 0 && i2 > 0) {
+        angsuranBaru = pokokPinjaman * (i2 * Math.pow(1 + i2, remainingMonthsAfterGrace)) / (Math.pow(1 + i2, remainingMonthsAfterGrace) - 1);
+      } else if (remainingMonthsAfterGrace > 0) {
+        angsuranBaru = pokokPinjaman / remainingMonthsAfterGrace;
+      } else {
+        angsuranBaru = 0;
+      }
+
+      if (remainingMonthsAfterGrace > 0 && i2 > 0) {
+        maksPlafondRpc = kapasitasAngsuranBaru * (Math.pow(1 + i2, remainingMonthsAfterGrace) - 1) / (i2 * Math.pow(1 + i2, remainingMonthsAfterGrace));
+      } else if (remainingMonthsAfterGrace > 0) {
+        maksPlafondRpc = kapasitasAngsuranBaru * remainingMonthsAfterGrace;
+      } else {
+        maksPlafondRpc = 0;
+      }
+
+      isLolosGaji = (angsuranBaru + angsuranEksisting) <= maksTotalAngsuranRpc;
+
+      document.getElementById('rowResBungaGrace').style.display = 'table-row';
+      document.getElementById('resBungaGrace').innerText = fmt.format(totalBungaGraceDipotongAwal);
     } else {
       document.getElementById('rowResBungaDimuka').style.display = 'none';
+      document.getElementById('rowResBungaGrace').style.display = 'none';
       totalBungaDimuka = 0;
 
       maksTotalAngsuranRpc = gaji * (persenGaji / 100);
@@ -1119,13 +1373,22 @@
     const nilaiPertanggungan = pokokPinjaman + bungaBulanPertama;
     const biayaAsuransi = nilaiPertanggungan * tarifAsuransi * (tenorBulan / 12); 
 
+    let asuransiPenambah = 0;
+    const rowResAsuransiPenambah = document.getElementById('rowResAsuransiPenambah');
+    if (progAsuransi === 'DENGAN') {
+      const persenPengaliAsuransi = parseFloat(document.getElementById('persenAsuransi').value) || 100;
+      asuransiPenambah = biayaAsuransi * (persenPengaliAsuransi / 100);
+      rowResAsuransiPenambah.style.display = 'table-row';
+      document.getElementById('resAsuransiPenambah').innerText = fmt.format(asuransiPenambah);
+    } else {
+      rowResAsuransiPenambah.style.display = 'none';
+    }
+
     const tabunganWajib = angsuranBaru * multTabungan; 
 
-    /* BIAYA NOTARIS TERMASUK DALAM POTONGAN BANK */
-    const totalBiayaPotongan = biayaAdmin + biayaProvisi + totalBungaDimuka + biayaAsuransi + biayaNotaris + tabunganWajib;
+    const totalBiayaPotongan = biayaAdmin + biayaProvisi + totalBungaDimuka + totalBungaGraceDipotongAwal + biayaAsuransi + biayaNotaris + retAsuransi + tabunganWajib;
     
-    /* FORMULA PENCAIRAN BERSIH */
-    const pencairanBersih = pokokPinjaman - totalBiayaPotongan - totalPelunasanEksisting + retAsuransi;
+    const pencairanBersih = pokokPinjaman - totalBiayaPotongan - totalPelunasanEksisting + asuransiPenambah;
 
     const rowsPelunasanRes = document.querySelectorAll('.row-pelunasan-res');
     rowsPelunasanRes.forEach(row => {
@@ -1172,7 +1435,9 @@
     document.getElementById('resJenisPengajuan').innerText = teksPengajuan[jenisPengajuan];
     
     let strBungaText = `${totalBungaEfektif.toFixed(2)}% p.a`;
-    if (spreadBunga > 0) {
+    if (tipePemohon === 'Prapurnabakti G7G') {
+      strBungaText = `Grace: ${totalBungaEfektif.toFixed(2)}% (Dibayar Diawal) | Pensiun: ${totalBungaKeduaEfektif.toFixed(2)}%`;
+    } else if (spreadBunga > 0) {
       strBungaText += ` (${bungaPertahun}% + Spread ${spreadBunga}%)`;
     }
     document.getElementById('resBungaTotal').innerText = strBungaText;
@@ -1187,6 +1452,11 @@
       document.getElementById('resMaksPlafondDsr').innerText = fmt.format(maksPlafondRpc);
       document.getElementById('resAngsuranBaru').innerText = 'Rp 0 (Lumpsum Akhir)';
       document.getElementById('resTotalAngsuran').innerText = 'Pelunasan Pokok saat Jatuh Tempo';
+    } else if (tipePemohon === 'Prapurnabakti G7G') {
+      document.getElementById('resMaksAngsuranGaji').innerText = fmt.format(maksTotalAngsuranRpc);
+      document.getElementById('resMaksPlafondDsr').innerText = fmt.format(maksPlafondRpc);
+      document.getElementById('resAngsuranBaru').innerText = `${fmt.format(angsuranBaru)} (Masa Pensiun)`;
+      document.getElementById('resTotalAngsuran').innerText = `${fmt.format(totalAngsuranCombined)} (${persenRpcAktual}% RPC)`;
     } else {
       document.getElementById('resMaksAngsuranGaji').innerText = fmt.format(maksTotalAngsuranRpc);
       document.getElementById('resMaksPlafondDsr').innerText = fmt.format(maksPlafondRpc);
@@ -1199,7 +1469,6 @@
     document.getElementById('resTotalPelunasanEks').innerText = fmt.format(totalPelunasanEksisting);
     document.getElementById('resPengembalianAsuransi').innerText = fmt.format(retAsuransi);
 
-    // TAMPILKAN BARIS NOTARIS PADA RINGKASAN HASIL JIKA PLAFOND >= 500Jt
     const rowResNotaris = document.getElementById('rowResNotaris');
     if (pokokPinjaman >= 500000000) {
       rowResNotaris.style.display = 'table-row';
@@ -1242,7 +1511,6 @@
 
     if (tipePemohon === 'Kredit THT') {
       for (let bulan = 1; bulan <= n; bulan++) {
-        let bungaBulan = 0; 
         let pokokBulan = (bulan === n) ? pokokPinjaman : 0;
         let angsuranBulan = pokokBulan;
         sisaPokok = (bulan === n) ? 0 : pokokPinjaman;
@@ -1253,6 +1521,48 @@
           <td>${fmt.format(pokokBulan)}</td>
           <td>Rp 0 (Dimuka)</td>
           <td>${fmt.format(sisaPokok)}</td>
+        </tr>`;
+      }
+    } else if (tipePemohon === 'Prapurnabakti G7G') {
+      let masaAktifBulan = (totalBulanBup + 1) - totalBulanUsia;
+      if (masaAktifBulan < 0) masaAktifBulan = 0;
+      let graceMonths = Math.min(n, masaAktifBulan);
+      let remainingMonthsAfterGrace = n - graceMonths;
+
+      let i1 = (totalBungaEfektif / 100) / 12;
+      let i2 = (totalBungaKeduaEfektif / 100) / 12;
+
+      let angsuranAmortisasiPensiun = 0;
+      if (remainingMonthsAfterGrace > 0 && i2 > 0) {
+        angsuranAmortisasiPensiun = sisaPokok * (i2 * Math.pow(1 + i2, remainingMonthsAfterGrace)) / (Math.pow(1 + i2, remainingMonthsAfterGrace) - 1);
+      } else if (remainingMonthsAfterGrace > 0) {
+        angsuranAmortisasiPensiun = sisaPokok / remainingMonthsAfterGrace;
+      }
+
+      for (let bulan = 1; bulan <= n; bulan++) {
+        let bungaBulan = 0;
+        let pokokBulan = 0;
+        let angsuranBulan = 0;
+
+        if (bulan <= graceMonths) {
+          bungaBulan = 0;
+          pokokBulan = 0;
+          angsuranBulan = 0;
+        } else {
+          bungaBulan = sisaPokok * i2;
+          angsuranBulan = angsuranAmortisasiPensiun;
+          pokokBulan = angsuranBulan - bungaBulan;
+          sisaPokok -= pokokBulan;
+        }
+
+        if (bulan === n) sisaPokok = 0;
+
+        htmlBuffer += `<tr>
+          <td style="text-align:center;">${bulan}</td>
+          <td>${fmt.format(angsuranBulan)}</td>
+          <td>${fmt.format(pokokBulan)}</td>
+          <td>${fmt.format(bungaBulan)}</td>
+          <td>${fmt.format(Math.max(0, sisaPokok))}</td>
         </tr>`;
       }
     } else {
