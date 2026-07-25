@@ -182,7 +182,7 @@
     .page-break {
       page-break-before: always !important;
       break-before: page !important;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     /* CSS Khusus saat Download / Print PDF */
@@ -425,7 +425,7 @@
           <input type="number" step="any" id="provisi" class="auto-field" value="0.2" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Tarif Asuransi (Otomatis Usia Roundup):</label>
+          <label style="color:#1e40af;">Tarif Asuransi:</label>
           <input type="number" step="0.00001" id="tarifAsuransi" class="auto-field" value="0.00500" required>
         </div>
         <div class="form-group">
@@ -512,7 +512,7 @@
 
       <!-- HEADER HALAMAN 2 -->
       <div class="pdf-header">
-        2. TABEL AMORTISASI ANGSURAN KREDIT
+        2. TABEL ANGSURAN KREDIT
         <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
       </div>
 
@@ -1471,7 +1471,7 @@
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT: Plafond Melebihi Limit RPC 85% Uang THT (${fmt.format(maksPlafondRpc)})`;
     } else if (isLolosGaji) {
       banner.className = "status-banner pass";
-      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK (Lolos Limit RPC & Skema Pelunasan)";
+      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK ";
     } else {
       banner.className = "status-banner fail";
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT (Rekomendasi Plafond Maksimal: ${fmt.format(maksPlafondRpc)})`;
