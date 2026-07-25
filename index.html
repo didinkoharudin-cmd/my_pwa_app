@@ -456,8 +456,8 @@
         <table class="pdf-table">
           <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
           <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
-          <tr id="rowResTglPengangkatan" style="display:none;"><th>Tgl. Pengangkatan Pegawai</th><td id="resTglPengangkatan" style="color:#1e40af;">-</td></tr>
-          <tr id="rowResGajiPokokTif" style="display:none;"><th>Gaji Pokok </th><td id="resGajiPokokTif" style="color:#16a34a;">-</td></tr>
+          <tr><th>Gaji Bersih</th><td id="resGajiBersih" style="color:#1e40af;">-</td></tr>
+          <tr><th>Plafon Diajukan</th><td id="resPlafonDiajukan" style="color:#16a34a;">-</td></tr>
           <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
           <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
           <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
@@ -745,7 +745,7 @@
     if (tipe === 'Prapurnabakti G7G') {
       grpBungaKedua.style.display = 'flex';
       lblBunga.innerHTML = "Bunga Grace Period / Tahun (%):";
-      bungaInput.value = 8;
+      bungaInput.value = 12.5;
     } else {
       grpBungaKedua.style.display = 'none';
       lblBunga.innerHTML = "Bunga Dasar / Tahun (%):";
@@ -1404,26 +1404,11 @@
     document.getElementById('resNamaDebitur').innerText = namaPemohon;
     document.getElementById('resTipePemohon').innerText = tipePemohon;
 
-    const rowResTglPengangkatan = document.getElementById('rowResTglPengangkatan');
-    const rowResGajiPokokTif = document.getElementById('rowResGajiPokokTif');
+    // UPDATE PENGISIAN GAJI BERSIH & PLAFON DIAJUKAN
+    document.getElementById('resGajiBersih').innerText = fmt.format(gaji);
+    document.getElementById('resPlafonDiajukan').innerText = fmt.format(pokokPinjaman);
+
     const rowResPerkiraanTht = document.getElementById('rowResPerkiraanTht');
-
-    if (tipePemohon === 'Prapurnabakti G2C' || tipePemohon === 'Prapurnabakti G7G') {
-      rowResTglPengangkatan.style.display = 'table-row';
-      rowResGajiPokokTif.style.display = 'table-row';
-
-      if (tglPengangkatan) {
-        const dateP = new Date(tglPengangkatan);
-        document.getElementById('resTglPengangkatan').innerText = dateP.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-      } else {
-        document.getElementById('resTglPengangkatan').innerText = '-';
-      }
-
-      document.getElementById('resGajiPokokTif').innerText = fmt.format(gajiPokokTif);
-    } else {
-      rowResTglPengangkatan.style.display = 'none';
-      rowResGajiPokokTif.style.display = 'none';
-    }
 
     if (tipePemohon === 'Kredit THT') {
       rowResPerkiraanTht.style.display = 'table-row';
