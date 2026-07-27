@@ -463,7 +463,7 @@
             <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
             <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
             <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
-            <tr><th>Maksimal Tenor Diberikan</th><td id="resMaksTenor" class="highlight">-</td></tr>
+            <tr><th>Tenor Diajukan</th><td id="resMaksTenor" class="highlight">-</td></tr>
             <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
             <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
             <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
@@ -1432,7 +1432,7 @@
     document.getElementById('peringatanBup').innerHTML = warningText ? `<div class="alert-warning">${warningText}</div>` : '';
     document.getElementById('resUsia').innerText = `${usiaTahun} Thn ${usiaSisaBulan} Bln`;
     document.getElementById('resUsiaRoundup').innerText = `${usiaRoundUp} Tahun`;
-    document.getElementById('resMaksTenor').innerText = `${maksTenorSistem} Bulan`;
+    document.getElementById('resMaksTenor').innerText = `${tenorBulan} Bulan`;
 
     if (tipePemohon === 'Kredit THT') {
       document.getElementById('resMaksAngsuranGaji').innerText = 'Dipotong Dimuka';
