@@ -6,6 +6,7 @@
   <title>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -83,7 +84,7 @@
     }
 
     /* --- CSS UTAMA / DASHBOARD --- */
-    #mainApp { display: none; } /* Disembunyikan sebelum login */
+    #mainApp { display: none; }
 
     .top-bar {
       display: flex;
@@ -110,7 +111,7 @@
 
     .container { max-width: 900px; margin: auto; background: #fff; padding: 25px 30px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
     
-    /* Header Dokumen PDF */
+    /* Header Dokumen PDF/Foto */
     .pdf-header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 18px; }
     .pdf-header h2 { margin: 0; color: #0f172a; font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase; }
     .pdf-header p { margin: 3px 0 0 0; color: #64748b; font-size: 11px; }
@@ -127,30 +128,34 @@
     input, select { padding: 7px 9px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 12px; background-color: #fff; }
     input:focus, select:focus { border-color: #2563eb; outline: none; }
     
-    /* Style Peringatan NIP Universal */
     .nip-warning { display: none; color: #c2410c; font-size: 10px; font-weight: bold; margin-top: 3px; background-color: #fff7ed; border: 1px solid #ffedd5; padding: 4px 6px; border-radius: 4px; }
 
-    /* Style untuk input otomatis */
     input.auto-field { background-color: #f1f5f9; font-weight: bold; color: #0f172a; }
     input.highlight-auto { background-color: #f0fdf4; color: #15803d; border-color: #86efac; font-weight: bold; font-size: 13px; }
 
-    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-    button.btn-submit { flex: 1; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    button.btn-submit { flex: 1 1 200px; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
     button.btn-submit:hover { background-color: #1e3a8a; }
-    button.btn-pdf { background-color: #dc2626; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1; }
+    
+    button.btn-pdf { background-color: #dc2626; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
     button.btn-pdf:hover { background-color: #b91c1c; }
+    
+    /* CSS Tombol Foto */
+    button.btn-photo { background-color: #ea580c; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
+    button.btn-photo:hover { background-color: #c2410c; }
+    
+    button.btn-wa { background-color: #16a34a; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
+    button.btn-wa:hover { background-color: #15803d; }
+
     button.btn-use-max { background-color: #16a34a; color: white; font-size: 10px; padding: 3px 6px; border-radius: 4px; border: none; margin-top: 4px; cursor: pointer; text-align: center; }
     button.btn-use-max:hover { background-color: #15803d; }
     
-    /* Layout Hasil & Cetak PDF */
     .result-box { margin-top: 15px; display: none; }
     
-    /* Status Banner */
     .status-banner { padding: 8px 12px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 12px; }
     .status-banner.pass { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
     .status-banner.fail { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
-    /* Ringkasan Rapi Format Tabel */
     .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 11px; }
     .pdf-table th, .pdf-table td { padding: 5px 8px; border: 1px solid #cbd5e1; }
     .pdf-table th { background-color: #f8fafc; text-align: left; color: #334155; font-weight: 600; width: 55%; }
@@ -162,13 +167,11 @@
 
     .alert-warning { background-color: #ffedd5; border: 1px solid #fed7aa; color: #9a3412; padding: 6px 10px; border-radius: 6px; margin-bottom: 12px; font-size: 11px; }
     
-    /* Box Informasi Marketing */
-    .marketing-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .marketing-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; page-break-inside: avoid; }
     .marketing-info { line-height: 1.4; }
     .marketing-info strong { color: #1e40af; font-size: 12px; }
     
-    /* Notes Footnote PDF */
-    .pdf-footnote { margin-top: 10px; text-align: center; font-size: 10px; font-style: italic; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 6px; }
+    .pdf-footnote { margin-top: 10px; text-align: center; font-size: 10px; font-style: italic; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 6px; page-break-inside: avoid; }
 
     .table-container { margin-top: 10px; max-height: 350px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; }
     table.amortization { width: 100%; border-collapse: collapse; font-size: 10px; }
@@ -176,10 +179,16 @@
     table.amortization th { background-color: #1e40af; color: white; text-align: center; position: sticky; top: 0; }
     table.amortization tr:nth-child(even) { background-color: #f8fafc; }
 
-    /* CSS Khusus saat Download / Print PDF */
+    /* CSS Khusus Area Screenshot Foto agar background bersih putih */
+    #printEvaluasiArea {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
     @media print {
       body { background: white; margin: 0; padding: 0; }
-      .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break { display: none !important; }
+      .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break, #btnDownloadPhoto { display: none !important; }
       .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
       .result-box { display: block !important; }
     }
@@ -192,16 +201,16 @@
     <h2>Login Sistem</h2>
     <p>Simulasi Kredit Konsumer & Ritel Karawang</p>
 
-    <div class="error-msg" id="loginError">⚠️ Username atau Password salah!</div>
+    <div class="error-msg" id="loginError">⚠️ Username dan Password tidak boleh kosong!</div>
 
     <form onsubmit="event.preventDefault(); prosesLogin();">
       <div class="login-group">
-        <label>Username</label>
-        <input type="text" id="username" placeholder="Masukkan username..." required autocomplete="off">
+        <label>Nama Account Officer (Username)</label>
+        <input type="text" id="username" placeholder="Masukkan nama..." required autocomplete="off">
       </div>
       <div class="login-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Masukkan password..." required>
+        <label>No. HP / WhatsApp (Password)</label>
+        <input type="text" id="password" placeholder="Masukkan nomor HP..." required autocomplete="off">
       </div>
       <button type="submit" class="btn-login">Masuk ke Sistem</button>
     </form>
@@ -215,15 +224,17 @@
   </div>
 
   <div class="container" id="cetakArea">
-    <div class="pdf-header">
-      <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
-      <p>Analisa & Rincian Pencairan Bersih</p>
-    </div>
-    
-    <div class="upload-box" id="uploadBox">
-      <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
-      <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
-      <span id="statusUpload" style="margin-left:8px; color:#64748b;">Belum ada file diunggah.</span>
+    <div class="no-print">
+        <div class="pdf-header">
+          <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
+          <p>Analisa & Rincian Pencairan Bersih</p>
+        </div>
+        
+        <div class="upload-box" id="uploadBox">
+          <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
+          <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
+          <span id="statusUpload" style="margin-left:8px; color:#64748b;">Belum ada file diunggah.</span>
+        </div>
     </div>
 
     <form id="simulasiForm" onsubmit="event.preventDefault(); hitungSimulasi();">
@@ -256,6 +267,10 @@
         <div class="form-group">
           <label style="color:#1e40af; font-weight:bold;">Nomor CIF (Autofill):</label>
           <input type="text" id="cif" class="auto-field" placeholder="Otomatis dari Excel" readonly>
+        </div>
+        <div class="form-group">
+          <label style="color:#1e40af; font-weight:bold;">Status Pegawai (Autofill):</label>
+          <input type="text" id="statusPegawai" class="auto-field" placeholder="Otomatis dari Excel / Manual" autocomplete="off">
         </div>
         <div class="form-group">
           <label>Nama Pemohon: *</label>
@@ -421,8 +436,9 @@
 
       <div class="btn-group" id="actionButtons">
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
+        <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
         <button type="button" class="btn-pdf" id="btnDownloadPdf" onclick="downloadPDF()">📄 Download PDF Ringkas</button>
-        <button type="button" class="btn-wa" id="btnKirimWa" onclick="kirimWhatsApp()" style="display: none; background-color: #25d366; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1;">📲 Kirim Penawaran</button>
+        <button type="button" class="btn-wa" id="btnKirimWa" onclick="kirimWhatsApp()">📲 Kirim Penawaran WA</button>
       </div>
     </form>
 
@@ -476,8 +492,8 @@
         <div class="marketing-card">
           <div class="marketing-info">
             <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
-            <strong>Didin Koharudin</strong><br>
-            <span>No. HP / WhatsApp: <b>08111292999</b></span>
+            <strong id="aoNamaDisplay">Didin Koharudin</strong><br>
+            <span>No. HP / WhatsApp: <b id="aoHpDisplay">08111292999</b></span>
           </div>
           <div style="text-align: right; color:#64748b; font-size: 10px;">
             <span>Tanggal Simulasi:</span><br>
@@ -488,9 +504,7 @@
         <div class="pdf-footnote">
           * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
         </div>
-      </div>
-
-      <div class="area-amortisasi">
+      </div> <div class="area-amortisasi">
         <div class="pdf-header" style="margin-top: 25px;">
           <h2>TABEL ANGSURAN KREDIT</h2>
           <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
@@ -518,24 +532,20 @@
 </div>
 
 <script>
-  // --- KREDENSIAL LOGIN DEFAULT ---
-  const validUsers = {
-    'admin': '123456',
-    'karawang': 'admin123'
-  };
-
   function prosesLogin() {
-    const userIn = document.getElementById('username').value.trim().toLowerCase();
-    const passIn = document.getElementById('password').value;
+    const userIn = document.getElementById('username').value.trim();
+    const passIn = document.getElementById('password').value.trim();
     const errBox = document.getElementById('loginError');
 
-    if (validUsers[userIn] && validUsers[userIn] === passIn) {
+    if (userIn !== "" && passIn !== "") {
       errBox.style.display = 'none';
       document.getElementById('loginPage').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
-      document.getElementById('loggedInUser').innerText = userIn.toUpperCase();
+      document.getElementById('loggedInUser').innerText = userIn;
+
+      document.getElementById('aoNamaDisplay').innerText = userIn;
+      document.getElementById('aoHpDisplay').innerText = passIn;
       
-      // Reset & Trigger Awal Aplikasi
       updateSkemaDanParameter();
       toggleJenisPengajuan();
       toggleProgAsuransi();
@@ -545,6 +555,7 @@
       hitungMaksimalTenorOtomatis();
       hitungPlafondMaksimalOtomatis();
     } else {
+      errBox.innerText = "⚠️ Username dan Password tidak boleh kosong!";
       errBox.style.display = 'block';
     }
   }
@@ -553,6 +564,7 @@
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
     document.getElementById('loginError').style.display = 'none';
+    document.getElementById('statusPegawai').value = '';
     
     document.getElementById('mainApp').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
@@ -587,48 +599,31 @@
 
     if (isMengulang) {
       switch (tipe) {
-        case "PNS Gaji":
-          return 12.5;
-        case "PPPK Gaji":
-          return 13.5;
+        case "PNS Gaji": return 12.5;
+        case "PPPK Gaji": return 13.5;
         case "PNS TPG":
-        case "PPPK TPG":
-          return 15.0;
+        case "PPPK TPG": return 15.0;
         case "PNS TPP":
-        case "Swasta":
-          return 13.0;
-        case "PPPK TPP":
-          return 13.5;
-        case "Pensiunan":
-          return 11.5;
-        case "TPG Non ASN":
-          return 17.5;
-        case "TNI/Polri":
-          return 9.75;
-        default:
-          return 11.0;
+        case "Swasta": return 13.0;
+        case "PPPK TPP": return 13.5;
+        case "Pensiunan": return 11.5;
+        case "TPG Non ASN": return 17.5;
+        case "TNI/Polri": return 9.75;
+        default: return 11.0;
       }
     } else {
       switch (tipe) {
-        case "PNS Gaji":
-          return 11.9;
-        case "PPPK Gaji":
-          return 12.9;
+        case "PNS Gaji": return 11.9;
+        case "PPPK Gaji": return 12.9;
         case "PNS TPP":
-        case "Swasta":
-          return 13.0;
+        case "Swasta": return 13.0;
         case "PNS TPG":
         case "PPPK TPP":
-        case "PPPK TPG":
-          return 13.5;
-        case "Pensiunan":
-          return 11.5;
-        case "TPG Non ASN":
-          return 17.5;
-        case "TNI/Polri":
-          return 9.75;
-        default:
-          return 11.0;
+        case "PPPK TPG": return 13.5;
+        case "Pensiunan": return 11.5;
+        case "TPG Non ASN": return 17.5;
+        case "TNI/Polri": return 9.75;
+        default: return 11.0;
       }
     }
   }
@@ -663,7 +658,7 @@
         if (sisaBulanKeBup > minBulanAwal) {
           pesanValidasiAturanKhusus = `⚠️ <b>Prapurnabakti G2C:</b> Pengajuan paling cepat 10 tahun (120 bulan) sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
-        const sisaBulanKeUsia6911 =( (69 * 12) + 11) - totalBulanUsia;
+        const sisaBulanKeUsia6911 = ((69 * 12) + 11) - totalBulanUsia;
         maxUsiaSelesai = Math.max(0, sisaBulanKeUsia6911);
       } 
       else if (tipe === 'Prapurnabakti G7G') {
@@ -671,7 +666,7 @@
         if (sisaBulanKeBup > minBulanAwal) {
           pesanValidasiAturanKhusus = `⚠️ <b>Prapurnabakti G7G:</b> Pengajuan paling cepat 58 bulan sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
-        const sisaBulanKeUsia6911 = ((69 * 12) + 11)- totalBulanUsia;
+        const sisaBulanKeUsia6911 = ((69 * 12) + 11) - totalBulanUsia;
         maxUsiaSelesai = Math.max(0, sisaBulanKeUsia6911);
       } 
       else if (tipe === 'Kredit THT') {
@@ -918,7 +913,8 @@
 
     if (tipePemohon === 'Kredit THT') {
       const perkiraanTht = parseInputValue('perkiraanTht');
-      nilaiPlafondMaksimalCalc = Math.floor(perkiraanTht * (persenGaji / 100)); 
+      nilaiPlafondMaksimalCalc = Math.floor(perkiraanTht * (persenGaji / 100));
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
       return;
     }
@@ -943,6 +939,8 @@
       } else {
         nilaiPlafondMaksimalCalc = 0;
       }
+      
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
       return;
     }
@@ -956,6 +954,8 @@
         : kapasitasAngsuranBaru * n;
 
       nilaiPlafondMaksimalCalc = Math.floor(maksPlafondRpc);
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
     } else {
       nilaiPlafondMaksimalCalc = 0;
@@ -1054,6 +1054,7 @@
     if (!nipInput) {
       warnNip.style.display = 'none';
       document.getElementById('cif').value = '';
+      document.getElementById('statusPegawai').value = '';
       return;
     }
 
@@ -1073,6 +1074,11 @@
 
       const valCif = getValueByFlexibleKey(peg, ['CIF', 'No CIF', 'Nomor CIF', 'CIF Pegawai', 'No. CIF']);
       document.getElementById('cif').value = valCif ? String(valCif).trim() : '-';
+
+      const valStatusPeg = getValueByFlexibleKey(peg, ['Status', 'Status Pegawai', 'Status Kepegawaian', 'StatusPegawai']);
+      if (valStatusPeg !== null) {
+        document.getElementById('statusPegawai').value = String(valStatusPeg).trim();
+      }
 
       const valNama = getValueByFlexibleKey(peg, ['Nama', 'Nama Pegawai', 'Nama Pemohon']);
       if (valNama) document.getElementById('nama').value = valNama;
@@ -1204,6 +1210,7 @@
     const jenisPengajuan = document.getElementById('jenisPengajuan').value;
     const namaPemohon = document.getElementById('nama').value || 'Pemohon';
     const numCif = document.getElementById('cif').value || '-';
+    // const statusPeg = document.getElementById('statusPegawai').value || '-'; /* Variabel tetap ada opsional jika butuh untuk fungsi lain */
     const tglLahir = document.getElementById('tglLahir').value;
     const tglPengangkatan = document.getElementById('tglPengangkatan').value;
     const bupTahun = parseInt(document.getElementById('bup').value);
@@ -1286,6 +1293,8 @@
       angsuranBaru = 0; 
       
       maksPlafondRpc = perkiraanTht * (persenGaji / 100); 
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      
       kapasitasAngsuranBaru = maksPlafondRpc;
       maksTotalAngsuranRpc = 0;
       isLolosGaji = (pokokPinjaman <= maksPlafondRpc);
@@ -1324,6 +1333,8 @@
       } else {
         maksPlafondRpc = 0;
       }
+      
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
 
       isLolosGaji = (angsuranBaru + angsuranEksisting) <= maksTotalAngsuranRpc;
 
@@ -1340,6 +1351,8 @@
       maksPlafondRpc = (i > 0) 
         ? kapasitasAngsuranBaru * (Math.pow(1 + i, n) - 1) / (i * Math.pow(1 + i, n))
         : kapasitasAngsuranBaru * n;
+      
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
 
       angsuranBaru = (i > 0) 
         ? pokokPinjaman * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)
@@ -1387,8 +1400,9 @@
 
     document.getElementById('resNamaDebitur').innerText = namaPemohon;
     document.getElementById('resTipePemohon').innerText = tipePemohon;
+    
+    // Line ini dihapus: document.getElementById('resStatusPegawai').innerText = statusPeg;
 
-    // UPDATE PENGISIAN GAJI BERSIH & PLAFON DIAJUKAN
     document.getElementById('resGajiBersih').innerText = fmt.format(gaji);
     document.getElementById('resPlafonDiajukan').innerText = fmt.format(pokokPinjaman);
 
@@ -1455,7 +1469,7 @@
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT: Plafond Melebihi Limit RPC 85% Uang THT (${fmt.format(maksPlafondRpc)})`;
     } else if (isLolosGaji) {
       banner.className = "status-banner pass";
-      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK (Lolos Limit RPC & Skema Pelunasan)";
+      banner.innerText = "✓ PENGAJUAN DISETUJU / LAYAK";
     } else {
       banner.className = "status-banner fail";
       banner.innerText = `✕ PENGAJUAN MELEBIHI LIMIT (Rekomendasi Plafond Maksimal: ${fmt.format(maksPlafondRpc)})`;
@@ -1553,31 +1567,45 @@
     }
 
     document.getElementById('tabelBody').innerHTML = htmlBuffer;
+
+    document.getElementById('btnDownloadPhoto').style.display = 'inline-block';
     document.getElementById('btnDownloadPdf').style.display = 'inline-block';
     document.getElementById('btnKirimWa').style.display = 'inline-block';
   }
 
-  // --- FUNGSI DOWNLOAD PDF: KHUSUS BAGIAN HASIL EVALUASI & FOOTNOTE ---
+  function generateFoto() {
+    const element = document.getElementById('printEvaluasiArea');
+    const namaPegawai = document.getElementById('nama').value || 'Debitur';
+
+    html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `Ringkasan_Kredit_${namaPegawai.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+
   function downloadPDF() {
     const namaPegawai = document.getElementById('nama').value || 'Debitur';
-    
-    // Ambil elemen khusus area Evaluasi saja untuk diprint
     const element = document.getElementById('printEvaluasiArea');
 
     const opt = {
-      margin:       [0.3, 0.3, 0.3, 0.3],
+      margin:       0.3,
       filename:     `Hasil_Evaluasi_Kredit_${namaPegawai.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      jsPDF:        { unit: 'cm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(element).save();
   }
 
-  // --- FUNGSI KIRIM WHATSAPP PENAWARAN ---
   function kirimWhatsApp() {
-    // 1. Ambil dan bersihkan nomor HP
     let noHp = document.getElementById('noHp').value.trim().replace(/[^0-9]/g, '');
     
     if (!noHp) {
@@ -1585,28 +1613,23 @@
       return;
     }
 
-    // 2. Format nomor ke format internasional (Ganti 0 awalan menjadi 62)
     if (noHp.startsWith('0')) {
       noHp = '62' + noHp.substring(1);
     }
 
-    // 4. Siapkan data untuk teks penawaran
     const nama = document.getElementById('nama').value || 'Bapak/Ibu';
+    const username = document.getElementById('username').value;
     const tipePemohon = document.getElementById('tipePemohon').value;
     const plafon = document.getElementById('resPlafonDiajukan').innerText;
     const tenor = document.getElementById('resMaksTenor').innerText;
     const angsuran = document.getElementById('resAngsuranBaru').innerText;
     const pencairan = document.getElementById('resPencairan').innerText;
 
-    // 5. Susun template pesan WhatsApp
-    const pesanWA = `Assalamualaikum, Bapak/Ibu ${nama},\n\nMohon maaf menggangu waktunya, ijin menawarkan pengajuan pinjaman bank *bjb* (${tipePemohon}) dengan rincian sebagai berikut :\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+    const pesanWA = `Halo ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
 
-    // 6. Buat link wa.me dan buka di tab baru setelah sedikit jeda (agar PDF terunduh dulu)
     const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
     
-    setTimeout(() => {
-      window.open(linkWA, '_blank');
-    }, 800);
+    window.open(linkWA, '_blank');
   }
 </script>
 
