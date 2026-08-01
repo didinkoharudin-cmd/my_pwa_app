@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</title>
-  <!-- Library SheetJS untuk Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Library html2pdf.js untuk Download PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
   <style>
@@ -189,7 +187,6 @@
 </head>
 <body>
 
-<!-- ================= TAMPILAN 1: HALAMAN LOGIN ================= -->
 <div class="login-wrapper" id="loginPage">
   <div class="login-card">
     <h2>Login Sistem</h2>
@@ -211,7 +208,6 @@
   </div>
 </div>
 
-<!-- ================= TAMPILAN 2: APLIKASI UTAMA ================= -->
 <div id="mainApp">
   <div class="top-bar" id="topBarArea">
     <div class="user-info">Selamat Datang, <strong id="loggedInUser">Admin</strong></div>
@@ -219,13 +215,11 @@
   </div>
 
   <div class="container" id="cetakArea">
-    <!-- HEADER HALAMAN SIMULASI -->
     <div class="pdf-header">
       <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
       <p>Analisa & Rincian Pencairan Bersih</p>
     </div>
     
-    <!-- Excel Upload Box -->
     <div class="upload-box" id="uploadBox">
       <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
       <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
@@ -268,6 +262,10 @@
           <input type="text" id="nama" required>
         </div>
         <div class="form-group">
+          <label style="color:#1e40af; font-weight:bold;">No. Handphone / WhatsApp (Autofill):</label>
+          <input type="text" id="noHp" placeholder="08xxxxxxxxxx" autocomplete="off">
+        </div>
+        <div class="form-group">
           <label id="lblDinas">Dinas / Instansi: *</label>
           <input type="text" id="dinas" required>
         </div>
@@ -284,7 +282,6 @@
           <input type="date" id="tglLahir" onchange="updateTarifAsuransiOtomatis(); hitungMaksimalTenorOtomatis(); hitungPlafondMaksimalOtomatis();" required>
         </div>
 
-        <!-- KOLOM KHUSUS TANGGAL PENGANGKATAN PEGAWAI (G2C & G7G) -->
         <div class="form-group" id="grpTglPengangkatan" style="display: none;">
           <label style="color:#2563eb; font-weight:bold;">Tanggal Pengangkatan Pegawai:</label>
           <input type="date" id="tglPengangkatan">
@@ -300,13 +297,11 @@
           </select>
         </div>
 
-        <!-- KOLOM KHUSUS GAJI POKOK / TIF (G2C & G7G) -->
         <div class="form-group" id="grpGajiPokokTif" style="display: none;">
           <label style="color:#16a34a; font-weight:bold;">Gaji Pokok (Rp): *</label>
           <input type="text" id="gajiPokokTif" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
         </div>
 
-        <!-- KOLOM KHUSUS PERKIRAAN THT (KREDIT THT) -->
         <div class="form-group" id="grpPerkiraanTht" style="display: none;">
           <label style="color:#d97706; font-weight:bold;">Perkiraan Uang THT (Rp): *</label>
           <input type="text" id="perkiraanTht" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
@@ -338,13 +333,11 @@
           <input type="text" id="bungaBerjalanEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
         </div>
 
-        <!-- PENGEMBALIAN BIAYA ASURANSI (SEBAGAI PENGURANG) -->
         <div class="form-group grp-pelunasan" id="grpPengembalianAsuransi">
           <label style="color:#b91c1c; font-weight:bold;">Pengembalian Biaya Asuransi (Rp):</label>
           <input type="text" id="pengembalianAsuransi" oninput="formatRupiahInput(this)" value="0" placeholder="0">
         </div>
 
-        <!-- HASIL OTO-COMPUTE PLAFOND MAKSIMAL -->
         <div class="form-group">
           <label style="color:#15803d; font-weight:bold;">✨ Plafond Maksimal (RPC Otomatis):</label>
           <input type="text" id="plafondMaksimalOtomatis" class="auto-field highlight-auto" value="Rp 0" readonly>
@@ -356,19 +349,16 @@
           <input type="text" id="pinjaman" value="50.000.000" oninput="formatRupiahInput(this); updateBiayaAdminOtomatis(); updateProvisiOtomatis(); checkBiayaNotarisVisibility();" required>
         </div>
 
-        <!-- KOLOM KHUSUS BIAYA NOTARIS (Tampil Otomatis jika Plafond >= 500 Juta) -->
         <div class="form-group" id="grpBiayaNotaris" style="display: none;">
           <label style="color:#dc2626; font-weight:bold;">Biaya Notaris (Rp) [Plafond ≥ 500Jt]:</label>
           <input type="text" id="biayaNotaris" oninput="formatRupiahInput(this)" value="0" placeholder="0">
         </div>
 
-        <!-- FIELD BUNGA PERTAHUN EDITABLE -->
         <div class="form-group">
           <label style="color:#1e40af;" id="lblBunga">Bunga Dasar / Tahun (%):</label>
           <input type="number" step="any" id="bunga" value="12.5" oninput="hitungPlafondMaksimalOtomatis();" required>
         </div>
 
-        <!-- FIELD BUNGA KEDUA KHUSUS PRAPURNABAKTI G7G -->
         <div class="form-group" id="grpBungaKedua" style="display: none;">
           <label style="color:#d97706; font-weight:bold;">Bunga Saat Pensiun / Tahun (%):</label>
           <input type="number" step="any" id="bungaKedua" value="13.5" oninput="hitungPlafondMaksimalOtomatis();" required>
@@ -387,7 +377,6 @@
           <input type="number" step="any" id="spreadBunga" value="0.85" oninput="hitungPlafondMaksimalOtomatis();">
         </div>
 
-        <!-- OPSI PERSENTASE ASURANSI (MUNCUL JIKA PROGRAM ASURANSI DIPILIH "DENGAN") -->
         <div class="form-group" id="grpPersenAsuransi" style="display: none;">
           <label style="color:#16a34a; font-weight:bold;">Persentase Pengali Asuransi (% Penambah Nett):</label>
           <select id="persenAsuransi" style="font-weight:bold; border-color:#16a34a;">
@@ -398,7 +387,6 @@
           </select>
         </div>
 
-        <!-- KOLOM MAKSIMAL TENOR BERDASARKAN SKEMA UTAMA -->
         <div class="form-group">
           <label style="color:#dc2626; font-weight:bold;">Maksimal Tenor (Tipe, Usia & BUP):</label>
           <input type="text" id="maksTenorDisplay" class="auto-field" style="color:#dc2626; font-weight:bold;" value="300 Bulan" readonly>
@@ -434,14 +422,12 @@
       <div class="btn-group" id="actionButtons">
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
         <button type="button" class="btn-pdf" id="btnDownloadPdf" onclick="downloadPDF()">📄 Download PDF Ringkas</button>
+        <button type="button" class="btn-wa" id="btnKirimWa" onclick="kirimWhatsApp()" style="display: none; background-color: #25d366; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1;">📲 Kirim Penawaran</button>
       </div>
     </form>
 
-    <!-- Area Hasil HALAMAN 1 (BAGIAN YANG DIPRINT KE PDF) -->
     <div class="result-box" id="ringkasan">
-      <!-- CONTAINER KHUSUS UNTUK AREA PRINT PDF -->
       <div id="printEvaluasiArea">
-        <!-- Header Dokumen khusus PDF -->
         <div class="pdf-header">
           <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
           <p>Analisa & Rincian Pencairan Bersih</p>
@@ -452,7 +438,6 @@
         <div id="statusBanner" class="status-banner"></div>
 
         <div class="two-column">
-          <!-- Tabel Kiri: Analisis Kapasitas -->
           <table class="pdf-table">
             <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
             <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
@@ -472,7 +457,6 @@
             <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
           </table>
 
-          <!-- Tabel Kanan: Rincian Potongan & Pencairan -->
           <table class="pdf-table">
             <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
             <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
@@ -489,7 +473,6 @@
           </table>
         </div>
 
-        <!-- Informasi Kontak Marketing -->
         <div class="marketing-card">
           <div class="marketing-info">
             <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
@@ -502,21 +485,17 @@
           </div>
         </div>
 
-        <!-- Catatan Penjelasan (Notes) untuk PDF -->
         <div class="pdf-footnote">
           * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
         </div>
       </div>
 
-      <!-- AREA AMORTISASI (TIDAK IKUT DIDEKAP/DIPRINT KE PDF RINGKAS) -->
       <div class="area-amortisasi">
-        <!-- HEADER HALAMAN 2 -->
         <div class="pdf-header" style="margin-top: 25px;">
           <h2>TABEL ANGSURAN KREDIT</h2>
           <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
         </div>
 
-        <!-- Tabel Amortisasi HALAMAN 2 -->
         <div class="section-title">IV. Jadwal Pembayaran Angsuran Bulanan</div>
         <div class="table-container" id="areaTabel">
           <table class="amortization">
@@ -1098,6 +1077,9 @@
       const valNama = getValueByFlexibleKey(peg, ['Nama', 'Nama Pegawai', 'Nama Pemohon']);
       if (valNama) document.getElementById('nama').value = valNama;
 
+      const valHp = getValueByFlexibleKey(peg, ['No HP', 'No. HP', 'Telepon', 'No Telepon', 'Nomor HP', 'Handphone', 'WhatsApp', 'No. Handphone']);
+      if (valHp !== null) document.getElementById('noHp').value = String(valHp).trim();
+
       const valDinas = getValueByFlexibleKey(peg, ['Dinas', 'Instansi', 'Unit Kerja']);
       if (valDinas) document.getElementById('dinas').value = valDinas;
 
@@ -1146,7 +1128,7 @@
       } else {
         keysAngsuran = ['Angsuran Gaji', 'AngsuranLama Gaji', 'Kewajiban Gaji', 'Cicilan Gaji'];
         keysSisaPokok = ['Sisa Pokok Gaji', 'SisaPokok Gaji', 'Pokok Gaji', 'Pelunasan Pokok Gaji', 'Sisa Plafond Gaji'];
-        keysBungaBerjalan = ['Bunga Berjalan Gaji', 'BungaBerjalan Gaji', 'Bunga Gaji', 'Pelunasan Bunga Gaji'];
+        keysBungaBerjalan = ['Bunga Berjalan Gaji', 'BungaBerjalan Gaji', 'Bunga TPG', 'Pelunasan Bunga Gaji'];
       }
 
       keysAngsuran.push('AngsuranLama', 'Angsuran Eksisting', 'Angsuran Lama', 'Kewajiban', 'Cicilan');
@@ -1572,6 +1554,7 @@
 
     document.getElementById('tabelBody').innerHTML = htmlBuffer;
     document.getElementById('btnDownloadPdf').style.display = 'inline-block';
+    document.getElementById('btnKirimWa').style.display = 'inline-block';
   }
 
   // --- FUNGSI DOWNLOAD PDF: KHUSUS BAGIAN HASIL EVALUASI & FOOTNOTE ---
@@ -1590,6 +1573,40 @@
     };
 
     html2pdf().set(opt).from(element).save();
+  }
+
+  // --- FUNGSI KIRIM WHATSAPP PENAWARAN ---
+  function kirimWhatsApp() {
+    // 1. Ambil dan bersihkan nomor HP
+    let noHp = document.getElementById('noHp').value.trim().replace(/[^0-9]/g, '');
+    
+    if (!noHp) {
+      alert("⚠️ Nomor Handphone / WhatsApp belum diisi di Data Pemohon!");
+      return;
+    }
+
+    // 2. Format nomor ke format internasional (Ganti 0 awalan menjadi 62)
+    if (noHp.startsWith('0')) {
+      noHp = '62' + noHp.substring(1);
+    }
+
+    // 4. Siapkan data untuk teks penawaran
+    const nama = document.getElementById('nama').value || 'Bapak/Ibu';
+    const tipePemohon = document.getElementById('tipePemohon').value;
+    const plafon = document.getElementById('resPlafonDiajukan').innerText;
+    const tenor = document.getElementById('resMaksTenor').innerText;
+    const angsuran = document.getElementById('resAngsuranBaru').innerText;
+    const pencairan = document.getElementById('resPencairan').innerText;
+
+    // 5. Susun template pesan WhatsApp
+    const pesanWA = `Assalamualaikum, Bapak/Ibu ${nama},\n\nMohon maaf menggangu waktunya, ijin menawarkan pengajuan pinjaman bank *bjb* (${tipePemohon}) dengan rincian sebagai berikut :\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+
+    // 6. Buat link wa.me dan buka di tab baru setelah sedikit jeda (agar PDF terunduh dulu)
+    const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
+    
+    setTimeout(() => {
+      window.open(linkWA, '_blank');
+    }, 800);
   }
 </script>
 
