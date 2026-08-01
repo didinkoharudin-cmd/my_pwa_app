@@ -137,9 +137,40 @@
     button.btn-submit { flex: 1 1 200px; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
     button.btn-submit:hover { background-color: #1e3a8a; }
     
-    button.btn-pdf { background-color: #dc2626; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
+    /* Dropdown Tombol Persyaratan */
+    .dropdown-container {
+      position: relative;
+      flex: 1 1 150px;
+      display: none;
+    }
+    button.btn-pdf { width: 100%; background-color: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; height: 100%; }
     button.btn-pdf:hover { background-color: #b91c1c; }
     
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      background-color: #ffffff;
+      min-width: 220px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 10;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .dropdown-content a {
+      color: #1e293b;
+      padding: 10px 14px;
+      text-decoration: none;
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dropdown-content a:hover { background-color: #f8fafc; color: #1e40af; }
+    .dropdown-container:hover .dropdown-content { display: block; }
+
     /* CSS Tombol Foto */
     button.btn-photo { background-color: #ea580c; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
     button.btn-photo:hover { background-color: #c2410c; }
@@ -188,7 +219,7 @@
 
     @media print {
       body { background: white; margin: 0; padding: 0; }
-      .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break, #btnDownloadPhoto { display: none !important; }
+      .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break, #btnDownloadPhoto, .dropdown-container { display: none !important; }
       .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
       .result-box { display: block !important; }
     }
@@ -437,7 +468,18 @@
       <div class="btn-group" id="actionButtons">
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
         <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
-        <button type="button" class="btn-pdf" id="btnDownloadPdf" onclick="downloadPDF()">📄 Download PDF Ringkas</button>
+        
+        <div class="dropdown-container" id="dropdownPersyaratanContainer">
+  <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
+  <div class="dropdown-content">
+    <a href="#" onclick="kirimPersyaratanWa('PNS Gaji/TPP')">PNS Gaji / TPP</a>
+    <a href="#" onclick="kirimPersyaratanWa('PPPK Gaji/TPP')">PPPK Gaji / TPP</a>
+    <a href="#" onclick="kirimPersyaratanWa('PPPK TPG')">PPPK TPG</a>
+    <a href="#" onclick="kirimPersyaratanWa('PNS TPG')">PNS Gaji / TPG</a>
+    <a href="#" onclick="kirimPersyaratanWa('Pensiunan')">Pensiunan</a>
+  </div>
+</div>
+
         <button type="button" class="btn-wa" id="btnKirimWa" onclick="kirimWhatsApp()">📲 Kirim Penawaran WA</button>
       </div>
     </form>
@@ -463,7 +505,6 @@
             <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
             <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
             <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
-            <tr><th>Usia Pembulatan (Asuransi)</th><td id="resUsiaRoundup" style="color:#1e40af;">-</td></tr>
             <tr><th>Tenor Diajukan</th><td id="resMaksTenor" class="highlight">-</td></tr>
             <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
             <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
@@ -1210,12 +1251,9 @@
     const jenisPengajuan = document.getElementById('jenisPengajuan').value;
     const namaPemohon = document.getElementById('nama').value || 'Pemohon';
     const numCif = document.getElementById('cif').value || '-';
-    // const statusPeg = document.getElementById('statusPegawai').value || '-'; /* Variabel tetap ada opsional jika butuh untuk fungsi lain */
     const tglLahir = document.getElementById('tglLahir').value;
-    const tglPengangkatan = document.getElementById('tglPengangkatan').value;
     const bupTahun = parseInt(document.getElementById('bup').value);
     const gaji = parseInputValue('gaji');
-    const gajiPokokTif = parseInputValue('gajiPokokTif');
     const perkiraanTht = parseInputValue('perkiraanTht');
     const persenGaji = parseFloat(document.getElementById('persenGaji').value) || 0;
     
@@ -1265,7 +1303,6 @@
 
     const usiaTahun = Math.floor(totalBulanUsia / 12);
     const usiaSisaBulan = totalBulanUsia % 12;
-    const usiaRoundUp = Math.ceil(totalBulanUsia / 12);
 
     let warningText = pesanValidasiAturanKhusus;
 
@@ -1293,7 +1330,7 @@
       angsuranBaru = 0; 
       
       maksPlafondRpc = perkiraanTht * (persenGaji / 100); 
-      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; 
       
       kapasitasAngsuranBaru = maksPlafondRpc;
       maksTotalAngsuranRpc = 0;
@@ -1334,7 +1371,7 @@
         maksPlafondRpc = 0;
       }
       
-      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; 
 
       isLolosGaji = (angsuranBaru + angsuranEksisting) <= maksTotalAngsuranRpc;
 
@@ -1352,7 +1389,7 @@
         ? kapasitasAngsuranBaru * (Math.pow(1 + i, n) - 1) / (i * Math.pow(1 + i, n))
         : kapasitasAngsuranBaru * n;
       
-      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      maksPlafondRpc = Math.floor(maksPlafondRpc / 1000000) * 1000000; 
 
       angsuranBaru = (i > 0) 
         ? pokokPinjaman * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)
@@ -1400,9 +1437,6 @@
 
     document.getElementById('resNamaDebitur').innerText = namaPemohon;
     document.getElementById('resTipePemohon').innerText = tipePemohon;
-    
-    // Line ini dihapus: document.getElementById('resStatusPegawai').innerText = statusPeg;
-
     document.getElementById('resGajiBersih').innerText = fmt.format(gaji);
     document.getElementById('resPlafonDiajukan').innerText = fmt.format(pokokPinjaman);
 
@@ -1427,7 +1461,6 @@
 
     document.getElementById('peringatanBup').innerHTML = warningText ? `<div class="alert-warning">${warningText}</div>` : '';
     document.getElementById('resUsia').innerText = `${usiaTahun} Thn ${usiaSisaBulan} Bln`;
-    document.getElementById('resUsiaRoundup').innerText = `${usiaRoundUp} Tahun`;
     document.getElementById('resMaksTenor').innerText = `${tenorBulan} Bulan`;
 
     if (tipePemohon === 'Kredit THT') {
@@ -1569,7 +1602,7 @@
     document.getElementById('tabelBody').innerHTML = htmlBuffer;
 
     document.getElementById('btnDownloadPhoto').style.display = 'inline-block';
-    document.getElementById('btnDownloadPdf').style.display = 'inline-block';
+    document.getElementById('dropdownPersyaratanContainer').style.display = 'inline-block';
     document.getElementById('btnKirimWa').style.display = 'inline-block';
   }
 
@@ -1589,20 +1622,97 @@
     });
   }
 
-  function downloadPDF() {
-    const namaPegawai = document.getElementById('nama').value || 'Debitur';
-    const element = document.getElementById('printEvaluasiArea');
+  function kirimPersyaratanWa(kategori) {
+    let noHp = document.getElementById('noHp').value.trim().replace(/[^0-9]/g, '');
+    
+    if (!noHp) {
+      alert("⚠️ Nomor Handphone / WhatsApp belum diisi di Data Pemohon!");
+      return;
+    }
 
-    const opt = {
-      margin:       0.3,
-      filename:     `Hasil_Evaluasi_Kredit_${namaPegawai.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'cm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    if (noHp.startsWith('0')) {
+      noHp = '62' + noHp.substring(1);
+    }
+
+    const nama = document.getElementById('nama').value || 'Bapak/Ibu';
+    const username = document.getElementById('username').value;
+
+    const daftarPersyaratan = {
+      'PNS Gaji/TPP': [
+        "KTP Suami Istri (Jika status menikah)",
+        "Kartu Keluarga (KK)",
+        "Buku Nikah / Akta Cerai /Akta Kematian (Sesuai Status Perkawinan)",
+        "NPWP",
+        "Pas Photo (4x6)",
+        "Copy Karpeg",
+        "Asli SK CPNS",
+        "Asli SK PNS",
+        "Asli SK Golongan Terakhir",
+        "Ledger Gaji",
+        "Copy Buku Tabungan"
+      ],
+      'PPPK Gaji/TPP': [
+        "KTP Suami Istri (Jika status menikah)",
+        "Kartu Keluarga (KK)",
+        "Buku Nikah / Akta Cerai /Akta Kematian (Sesuai Status Perkawinan)",
+        "NPWP",
+        "Pas Photo (4x6)",
+        "Asli SK PPPK",
+        "Asli Perjanjian Kerja",
+        "Asli Ijazah Terakhir",
+        "Ledger Gaji",
+        "Copy Buku Tabungan",
+        "Surat Rekomendasi dan Pernyataan"
+      ],
+      'PPPK TPG': [
+        "KTP Suami Istri (Jika status menikah)",
+        "Kartu Keluarga (KK)",
+        "Buku Nikah / Akta Cerai /Akta Kematian (Sesuai Status Perkawinan)",
+        "NPWP",
+        "Pas Photo (4x6)",
+        "Asli SK PPPK",
+        "Asli Perjanjian Kerja",
+        "Asli Ijazah Terakhir",
+        "Ledger Gaji",
+        "Asli Sertifikat Pendidik",
+        "Copy Buku Tabungan",
+        "Surat Rekomendasi dan Pernyataan"
+      ],
+      'PNS TPG': [
+        "KTP Suami Istri (Jika status menikah)",
+        "Kartu Keluarga (KK)",
+        "Buku Nikah / Akta Cerai /Akta Kematian (Sesuai Status Perkawinan)",
+        "NPWP",
+        "Pas Photo (4x6)",
+        "Copy Karpeg",
+        "Asli SK CPNS",
+        "Asli SK PNS",
+        "Asli SK Golongan Terakhir",
+        "Asli Sertifikat Pendidik",
+        "Ledger Gaji",
+        "Copy Buku Tabungan"
+      ],
+      'Pensiunan': [
+        "KTP Suami Istri (Jika status menikah)",
+        "Kartu Keluarga (KK)",
+        "Buku Nikah / Akta Cerai /Akta Kematian (Sesuai Status Perkawinan)",
+        "NPWP",
+        "Pas Photo (4x6)",
+        "Asli SK Pensiun",
+        "Copy Buku Tabungan"
+      ]
     };
 
-    html2pdf().set(opt).from(element).save();
+    const items = daftarPersyaratan[kategori] || [];
+    let listPesan = "";
+    items.forEach((item, index) => {
+      listPesan += `${index +1}. ${item}\n`;
+    });
+
+    const pesanWA = `Dokumen persyaratan yang perlu disiapkan untuk pengajuan kredit kategori *${kategori}*:\n\n${listPesan}\nSilakan dilengkapi agar dapat segera kami proses.\n\n_Jika persyaratan asli sudah di bjb, cukup lampirkan copy saja._\n\nTerima kasih,\n_${username}_`;
+
+    const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
+    window.open(linkWA, '_blank');
   }
 
   function kirimWhatsApp() {
