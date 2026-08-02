@@ -700,7 +700,14 @@
       <div class="btn-group" id="actionButtons">
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
         <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
-        
+        <!-- Tombol Download Report Excel & PDF Baru -->
+<button type="button" class="btn-excel-report" onclick="exportExcelReport()" style="background: #15803d; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 13px; cursor: pointer; padding: 14px; flex: 1 1 150px; transition: var(--transition);">
+  📊 Download Report Excel
+</button>
+
+<button type="button" class="btn-pdf-report" onclick="exportPdfReport()" style="background: #dc2626; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 13px; cursor: pointer; padding: 14px; flex: 1 1 150px; transition: var(--transition);">
+  📄 Download Report PDF
+</button>
         <div class="dropdown-container" id="dropdownPersyaratanContainer">
           <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
           <div class="dropdown-content">
@@ -1970,12 +1977,177 @@
     const angsuran = document.getElementById('resAngsuranBaru').innerText;
     const pencairan = document.getElementById('resPencairan').innerText;
 
-    const pesanWA = `Assalamualaikum, Bapak/ibu ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+    const pesanWA = `Assalamualaikum Bapak/ibu ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
 
     const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
     
     window.open(linkWA, '_blank');
   }
+  // --- LOGIK PENYIMPANAN RIWAYAT PENAWARAN ---
+function simpanPenawaranKeRiwayat() {
+  const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Admin';
+  const namaDebitur = document.getElementById('resNamaDebitur').innerText;
+  const dinas = document.getElementById('dinas').value || '-';
+  const cif = document.getElementById('cif').value || '-';
+  const noHp = document.getElementById('noHp').value || '-';
+  const tipePengajuan = document.getElementById('resTipePemohon').innerText + ' (' + document.getElementById('resJenisPengajuan').innerText + ')';
+  const plafond = document.getElementById('resPlafonDiajukan').innerText;
+  const diterimaBersih = document.getElementById('resPencairan').innerText;
+  const tanggal = new Date().toLocaleDateString('id-ID');
+
+  if (!namaDebitur || namaDebitur === '-') {
+    alert("Silakan hitung simulasi terlebih dahulu sebelum merekam penawaran!");
+    return false;
+  }
+
+  let riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+
+  // Tambahkan data baru ke daftar
+  riwayat.push({
+    accountOfficer: aoNama,
+    namaDebitur: namaDebitur,
+    dinas: dinas,
+    cif: cif,
+    noHp: noHp,
+    tipePengajuan: tipePengajuan,
+    plafond: plafond,
+    diterimaBersih: diterimaBersih,
+    tanggal: tanggal
+  });
+
+  localStorage.setItem('riwayatPenawaranDebitur', JSON.stringify(riwayat));
+  return true;
+}
+
+// Update fungsi Kirim WhatsApp agar otomatis menyimpan ke riwayat penawaran
+function kirimWhatsApp() {
+  const noHp = document.getElementById('noHp').value.replace(/[^0-9]/g, '');
+  if (!noHp) {
+    alert("Nomor WhatsApp calon debitur belum diisi!");
+    return;
+  }
+
+  // Simpan data penawaran
+  simpanPenawaranKeRiwayat();
+
+  const nama = document.getElementById('resNamaDebitur').innerText;
+  const plafon = document.getElementById('resPlafonDiajukan').innerText;
+  const tenor = document.getElementById('resMaksTenor').innerText;
+  const angsuran = document.getElementById('resAngsuranBaru').innerText;
+  const pencairan = document.getElementById('resPencairan').innerText;
+  const aoNama = document.getElementById('aoNamaDisplay').innerText;
+
+  let pesan = `Yth. Bapak/Ibu *${nama}*,\n\nBerikut penawaran simulasi kredit Bank BJB Karawang:\n` +
+              `- Plafond: *${plafon}*\n` +
+              `- Tenor: *${tenor}*\n` +
+              `- Angsuran/Bulan: *${angsuran}*\n` +
+              `- Estimasi Pencairan Bersih (Nett): *${pencairan}*\n\n` +
+              `Account Officer: *${aoNama}*\n` +
+              `Terima kasih.`;
+
+  let formattedHp = noHp.startsWith('0') ? '62' + noHp.substring(1) : noHp;
+  window.open(`https://wa.me/${formattedHp}?text=${encodeURIComponent(pesan)}`, '_blank');
+}
+
+// --- FUNGSI EXPORT REPORT EXCEL ---
+function exportExcelReport() {
+  const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+  
+  if (riwayat.length === 0) {
+    alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
+    return;
+  }
+
+  const dataExcel = riwayat.map((item, index) => ({
+    "No": index + 1,
+    "Nama Account Officer": item.accountOfficer,
+    "Nama Calon Debitur": item.namaDebitur,
+    "Dinas / Instansi": item.dinas,
+    "CIF": item.cif,
+    "No HP / WA": item.noHp,
+    "Tipe Pengajuan": item.tipePengajuan,
+    "Plafond": item.plafond,
+    "Diterima Bersih (Nett)": item.diterimaBersih,
+    "Tanggal Penawaran": item.tanggal
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(dataExcel);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Daftar Penawaran");
+
+  // Atur lebar kolom otomatis
+  worksheet['!cols'] = [
+    { wch: 5 },  { wch: 22 }, { wch: 25 }, { wch: 20 },
+    { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 18 },
+    { wch: 18 }, { wch: 15 }
+  ];
+
+  XLSX.writeFile(workbook, `Report_Penawaran_Debitur_${new Date().toISOString().slice(0, 10)}.xlsx`);
+}
+
+// --- FUNGSI EXPORT REPORT PDF ---
+function exportPdfReport() {
+  const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+  
+  if (riwayat.length === 0) {
+    alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
+    return;
+  }
+
+  const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Account Officer';
+
+  let rowsHtml = riwayat.map((item, idx) => `
+    <tr>
+      <td style="text-align:center; padding:6px; border:1px solid #cbd5e1;">${idx + 1}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1;"><b>${item.namaDebitur}</b></td>
+      <td style="padding:6px; border:1px solid #cbd5e1;">${item.dinas}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1;">${item.cif}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1;">${item.noHp}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1;">${item.tipePengajuan}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1; text-align:right;">${item.plafond}</td>
+      <td style="padding:6px; border:1px solid #cbd5e1; text-align:right; font-weight:bold; color:#059669;">${item.diterimaBersih}</td>
+    </tr>
+  `).join('');
+
+  const container = document.createElement('div');
+  container.style.padding = '15px';
+  container.style.fontFamily = 'Inter, sans-serif';
+  container.innerHTML = `
+    <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #1e40af; padding-bottom:10px;">
+      <h2 style="margin:0; color:#1e40af; font-size:16px;">LAPORAN DAFTAR PENAWARAN CALON DEBITUR</h2>
+      <p style="margin:4px 0 0 0; color:#475569; font-size:11px;">
+        Account Officer: <b>${aoNama}</b> | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}
+      </p>
+    </div>
+    <table style="width:100%; border-collapse:collapse; font-size:10px;">
+      <thead>
+        <tr style="background-color:#1e40af; color:white;">
+          <th style="padding:6px; border:1px solid #1e40af;">No</th>
+          <th style="padding:6px; border:1px solid #1e40af;">Nama Debitur</th>
+          <th style="padding:6px; border:1px solid #1e40af;">Dinas</th>
+          <th style="padding:6px; border:1px solid #1e40af;">CIF</th>
+          <th style="padding:6px; border:1px solid #1e40af;">No. HP</th>
+          <th style="padding:6px; border:1px solid #1e40af;">Tipe Pengajuan</th>
+          <th style="padding:6px; border:1px solid #1e40af;">Plafond</th>
+          <th style="padding:6px; border:1px solid #1e40af;">Diterima Bersih</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
+
+  const opt = {
+    margin: 8,
+    filename: `Report_Penawaran_Debitur_${aoNama.replace(/\s+/g, '_')}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+  };
+
+  html2pdf().set(opt).from(container).save();
+}
 </script>
 
 </body>
