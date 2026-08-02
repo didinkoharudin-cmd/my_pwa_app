@@ -1,12 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</title>    
   
-  <!-- Font Google Inter untuk tampilan lebih modern -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -380,10 +378,11 @@
     
     .pdf-footnote { margin-top: 15px; text-align: center; font-size: 11px; font-style: italic; color: var(--secondary); border-top: 1px dashed var(--border-color); padding-top: 10px; page-break-inside: avoid; }
 
-    .table-container { margin-top: 15px; max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    /* Modifikasi ditambahkan overflow-x untuk tabel */
+    .table-container { margin-top: 15px; max-height: 400px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); -webkit-overflow-scrolling: touch; }
     
     /* Scrollbar styling */
-    .table-container::-webkit-scrollbar { width: 6px; }
+    .table-container::-webkit-scrollbar { width: 6px; height: 6px; }
     .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
     .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .table-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -412,11 +411,48 @@
       .pdf-table { margin-bottom: 10px; page-break-inside: avoid; }
     }
     
-    /* Responsivitas Layar Kecil */
+    /* --- OPTIMASI RESPONSIVITAS LAYAR KECIL (MOBILE) --- */
     @media (max-width: 768px) {
-      .two-column { grid-template-columns: 1fr; gap: 10px; }
-      .container { padding: 20px; }
-      .btn-group { flex-direction: column; }
+      body { padding: 10px; }
+      
+      .login-card { padding: 25px 20px; }
+      
+      /* Baris atas dirubah menjadi kolom bersusun */
+      .top-bar { 
+        flex-direction: column; 
+        gap: 12px; 
+        text-align: center; 
+        padding: 15px; 
+      }
+      
+      /* Ruang kosong ditepi disesuaikan */
+      .container { padding: 20px 15px; }
+      #printEvaluasiArea { padding: 15px; }
+      
+      /* Tabel dua kolom dipisah menjadi satu kolom */
+      .two-column { grid-template-columns: 1fr; gap: 15px; }
+      
+      /* Layout tombol menjadi berurut ke bawah */
+      .btn-group { flex-direction: column; gap: 10px; }
+      .btn-group button, .dropdown-container { width: 100%; flex: none; display: block; }
+      button.btn-pdf { width: 100%; }
+      
+      /* Tabel rincian evaluasi: menyesuaikan ukuran font dan padding */
+      .pdf-table th, .pdf-table td { padding: 8px 6px; font-size: 11px; }
+      
+      /* Tabel amortisasi: Mencegah teks hancur dengan memberikan lebar minimum lalu scroll horizontal */
+      table.amortization { min-width: 500px; }
+      
+      /* Susunan Marketing Card menjadi bertumpuk */
+      .marketing-card { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 15px; 
+      }
+      .marketing-card > div { text-align: center !important; }
+      
+      /* Mencegah auto-zoom di iOS Safari saat fokus input */
+      input, select, textarea { font-size: 16px !important; }
     }
   </style>
 </head>
@@ -1928,12 +1964,13 @@
     const nama = document.getElementById('nama').value || 'Bapak/Ibu';
     const username = document.getElementById('username').value;
     const tipePemohon = document.getElementById('tipePemohon').value;
+    const jenisPengajuan = document.getElementById('jenisPengajuan').value;
     const plafon = document.getElementById('resPlafonDiajukan').innerText;
     const tenor = document.getElementById('resMaksTenor').innerText;
     const angsuran = document.getElementById('resAngsuranBaru').innerText;
     const pencairan = document.getElementById('resPencairan').innerText;
 
-    const pesanWA = `Halo ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman ${tipePemohon} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+    const pesanWA = `Halo ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
 
     const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
     
