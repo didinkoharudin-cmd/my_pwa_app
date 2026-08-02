@@ -701,13 +701,9 @@
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
         <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
         <!-- Tombol Download Report Excel & PDF Baru -->
-<button type="button" class="btn-excel-report" onclick="exportExcelReport()" style="background: #15803d; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 13px; cursor: pointer; padding: 14px; flex: 1 1 150px; transition: var(--transition);">
-  📊 Download Report Excel
-</button>
+<button type="button" class="btn-excel-report" id="btnexcelreport" onclick="exportExcelReport()">
+  📊 Download Report Excel</button>
 
-<button type="button" class="btn-pdf-report" onclick="exportPdfReport()" style="background: #dc2626; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 13px; cursor: pointer; padding: 14px; flex: 1 1 150px; transition: var(--transition);">
-  📄 Download Report PDF
-</button>
         <div class="dropdown-container" id="dropdownPersyaratanContainer">
           <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
           <div class="dropdown-content">
@@ -1844,8 +1840,8 @@
 
     document.getElementById('btnDownloadPhoto').style.display = 'inline-block';
     document.getElementById('dropdownPersyaratanContainer').style.display = 'inline-block';
-    document.getElementById('btnKirimWa').style.display = 'inline-block';
-  }
+    document.getElementById('btnKirimWa').style.display = 'inline-block'; 
+    document.getElementById('btnexcelreport').style.display = 'inline-block';  }
 
   function generateFoto() {
     const element = document.getElementById('printEvaluasiArea');
