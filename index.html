@@ -672,7 +672,7 @@
 
         <div class="form-group">
           <label>Tenor Diajukan (Bulan):</label>
-          <input type="number" id="tenor" value="38" oninput="validasiInputTenor(); updateProvisiOtomatis(); hitungPlafondMaksimalOtomatis();" required>
+          <input type="number" id="tenor" value="36" oninput="validasiInputTenor(); updateProvisiOtomatis(); hitungPlafondMaksimalOtomatis();" required>
         </div>
         <div class="form-group">
           <label style="color:var(--primary-dark);">Biaya Administrasi (Otomatis Tiering):</label>
@@ -945,9 +945,9 @@
         maxUsiaSelesai = Math.max(0, sisaBulanKeUsia6911);
       } 
       else if (tipe === 'Kredit THT') {
-        const minBulanAwal = 38;
+        const minBulanAwal = 36;
         if (sisaBulanKeBup > minBulanAwal) {
-          pesanValidasiAturanKhusus = `⚠️ <b>Kredit THT:</b> Pengajuan paling cepat 38 bulan sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
+          pesanValidasiAturanKhusus = `⚠️ <b>Kredit THT:</b> Pengajuan paling cepat 36 bulan sebelum BUP. Sisa masa aktif Anda saat ini ${(sisaBulanKeBup/12).toFixed(1)} tahun.`;
         }
         maxUsiaSelesai = Math.max(0, sisaBulanKeBup + 2);
       } 
