@@ -2037,7 +2037,7 @@ function kirimWhatsApp() {
   const pencairan = document.getElementById('resPencairan').innerText;
   const aoNama = document.getElementById('aoNamaDisplay').innerText;
 
-  let pesan = `Yth. Bapak/Ibu *${nama}*,\n\nBerikut penawaran simulasi kredit Bank BJB Karawang:\n` +
+  let pesan = `Assalamualiakum, Yth ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut::\n` +
               `- Plafond: *${plafon}*\n` +
               `- Tenor: *${tenor}*\n` +
               `- Angsuran/Bulan: *${angsuran}*\n` +
@@ -2046,7 +2046,7 @@ function kirimWhatsApp() {
               `Terima kasih.`;
 
   let formattedHp = noHp.startsWith('0') ? '62' + noHp.substring(1) : noHp;
-  window.open(`https://wa.me/${formattedHp}?text=${encodeURIComponent(pesan)}`, '_blank');
+  window.open(`https://wa.me/${formattedHp}?text=${pesan}`, '_blank');
 }
 
 // --- FUNGSI EXPORT REPORT EXCEL ---
