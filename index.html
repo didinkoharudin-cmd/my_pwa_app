@@ -1,227 +1,422 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</title>
+  <title>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</title>    
+  
+  <!-- Font Google Inter untuk tampilan lebih modern -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; margin: 20px; color: #1e293b; }
+    /* --- CSS VARIABEL MODERN --- */
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --primary-light: #eff6ff;
+      --secondary: #64748b;
+      --bg-body: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+      --danger: #ef4444;
+      --danger-dark: #dc2626;
+      --success: #10b981;
+      --success-dark: #059669;
+      --warning: #f59e0b;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', Tahoma, sans-serif; }
+    
+    body { 
+      background-color: var(--bg-body); 
+      margin: 0; 
+      padding: 20px; 
+      color: var(--text-main); 
+      line-height: 1.5;
+    }
     
     /* --- CSS HALAMAN LOGIN --- */
     .login-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
+      min-height: 90vh;
+      background: radial-gradient(circle at top, var(--primary-light), var(--bg-body));
     }
     .login-card {
-      background: #ffffff;
-      padding: 35px 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      padding: 40px 35px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.5);
     }
     .login-card h2 {
       margin-top: 0;
-      color: #0f172a;
-      font-size: 20px;
+      color: var(--text-main);
+      font-size: 22px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .login-card p {
-      color: #64748b;
-      font-size: 12px;
-      margin-bottom: 25px;
+      color: var(--secondary);
+      font-size: 13px;
+      margin-bottom: 30px;
     }
     .login-group {
       text-align: left;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
     .login-group label {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      color: #475569;
+      color: var(--text-muted);
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     .login-group input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 13px;
+      padding: 12px 15px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      transition: var(--transition);
+      background-color: #fcfcfc;
+    }
+    .login-group input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      background-color: #fff;
     }
     .btn-login {
       width: 100%;
-      padding: 12px;
-      background-color: #1e40af;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 14px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 15px;
       cursor: pointer;
       margin-top: 10px;
-      transition: background 0.2s;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
-    .btn-login:hover { background-color: #1e3a8a; }
+    .btn-login:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4); 
+    }
     .error-msg {
-      color: #dc2626;
-      font-size: 11px;
+      color: var(--danger-dark);
+      font-size: 13px;
+      font-weight: 500;
       background-color: #fef2f2;
-      border: 1px solid #fca5a5;
-      padding: 8px;
-      border-radius: 5px;
-      margin-bottom: 15px;
+      border: 1px solid #fecaca;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
       display: none;
     }
 
     /* --- CSS UTAMA / DASHBOARD --- */
-    #mainApp { display: none; }
+    #mainApp { display: none; max-width: 950px; margin: 0 auto; }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #1e293b;
+      background: linear-gradient(to right, #0f172a, #1e293b);
       color: white;
-      padding: 10px 20px;
-      border-radius: 8px 8px 0 0;
-      margin-bottom: -5px;
+      padding: 15px 25px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      margin-bottom: 0;
+      box-shadow: var(--shadow-sm);
     }
-    .user-info { font-size: 12px; }
+    .user-info { font-size: 14px; font-weight: 500; }
     .btn-logout {
-      background: #dc2626;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      border: none;
-      padding: 5px 12px;
-      border-radius: 4px;
-      font-size: 11px;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+      transition: var(--transition);
     }
-    .btn-logout:hover { background: #b91c1c; }
+    .btn-logout:hover { background: var(--danger); border-color: var(--danger); }
 
-    .container { max-width: 900px; margin: auto; background: #fff; padding: 25px 30px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .container { 
+      background: var(--card-bg); 
+      padding: 30px 40px; 
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg); 
+      box-shadow: var(--shadow-lg); 
+    }
     
     /* Header Dokumen PDF/Foto */
-    .pdf-header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 18px; }
-    .pdf-header h2 { margin: 0; color: #0f172a; font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase; }
-    .pdf-header p { margin: 3px 0 0 0; color: #64748b; font-size: 11px; }
+    .pdf-header { text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
+    .pdf-header h2 { margin: 0; color: var(--primary-dark); font-size: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .pdf-header p { margin: 5px 0 0 0; color: var(--secondary); font-size: 13px; font-weight: 500;}
     
-    .upload-box { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; text-align: center; }
-    .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
-    .status-ready { background: #dcfce7; color: #166534; }
+    .upload-box { 
+      background: var(--bg-body); 
+      border: 2px dashed #cbd5e1; 
+      padding: 15px; 
+      border-radius: var(--radius-md); 
+      margin-bottom: 25px; 
+      font-size: 13px; 
+      text-align: center; 
+      transition: var(--transition);
+    }
+    .upload-box:hover { border-color: var(--primary); background: var(--primary-light); }
+    .status-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; display: inline-block; margin-top: 5px; }
+    .status-ready { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
     
-    .section-title { font-size: 12px; font-weight: bold; color: #1e40af; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin: 16px 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .section-title { 
+      font-size: 14px; 
+      font-weight: 700; 
+      color: var(--primary-dark); 
+      background: var(--primary-light);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      margin: 25px 0 15px 0; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      display: inline-block;
+    }
     
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px 20px; }
     .form-group { display: flex; flex-direction: column; position: relative; }
-    label { font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 3px; }
-    input, select { padding: 7px 9px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 12px; background-color: #fff; }
-    input:focus, select:focus { border-color: #2563eb; outline: none; }
     
-    .nip-warning { display: none; color: #c2410c; font-size: 10px; font-weight: bold; margin-top: 3px; background-color: #fff7ed; border: 1px solid #ffedd5; padding: 4px 6px; border-radius: 4px; }
+    label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    
+    input, select { 
+      padding: 10px 14px; 
+      border: 1.5px solid var(--border-color); 
+      border-radius: var(--radius-sm); 
+      font-size: 13px; 
+      background-color: #fff; 
+      transition: var(--transition);
+      color: var(--text-main);
+    }
+    input:focus, select:focus { 
+      border-color: var(--primary); 
+      outline: none; 
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .nip-warning { display: none; color: #b45309; font-size: 11px; font-weight: 600; margin-top: 6px; background-color: #fffbeb; border: 1px solid #fef3c7; padding: 6px 10px; border-radius: var(--radius-sm); }
 
-    input.auto-field { background-color: #f1f5f9; font-weight: bold; color: #0f172a; }
-    input.highlight-auto { background-color: #f0fdf4; color: #15803d; border-color: #86efac; font-weight: bold; font-size: 13px; }
+    input.auto-field { background-color: #f1f5f9; font-weight: 600; color: var(--secondary); cursor: not-allowed; }
+    input.highlight-auto { background-color: #ecfdf5; color: var(--success-dark); border-color: #a7f3d0; font-weight: 700; font-size: 14px; cursor: default; }
 
-    .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-    button.btn-submit { flex: 1 1 200px; padding: 11px; background-color: #1e40af; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    button.btn-submit:hover { background-color: #1e3a8a; }
+    .btn-group { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+    
+    button.btn-submit { 
+      flex: 1 1 200px; 
+      padding: 14px; 
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); 
+      color: white; 
+      border: none; 
+      border-radius: var(--radius-md); 
+      font-size: 14px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    button.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35); }
     
     /* Dropdown Tombol Persyaratan */
-    .dropdown-container {
-      position: relative;
-      flex: 1 1 150px;
-      display: none;
+    .dropdown-container { position: relative; flex: 1 1 150px; display: none; }
+    button.btn-pdf { 
+      width: 100%; 
+      background: linear-gradient(135deg, var(--secondary) 0%, #475569 100%); 
+      color: white; 
+      border: none; 
+      border-radius: var(--radius-md); 
+      font-size: 13px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      padding: 14px; 
+      height: 100%; 
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
     }
-    button.btn-pdf { width: 100%; background-color: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; height: 100%; }
-    button.btn-pdf:hover { background-color: #b91c1c; }
+    button.btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(71, 85, 105, 0.3); }
     
     .dropdown-content {
       display: none;
       position: absolute;
       bottom: 100%;
       left: 0;
-      background-color: #ffffff;
+      background-color: var(--card-bg);
       min-width: 220px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-lg);
       z-index: 10;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      margin-bottom: 5px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      margin-bottom: 8px;
+      overflow: hidden;
     }
     .dropdown-content a {
-      color: #1e293b;
-      padding: 10px 14px;
+      color: var(--text-main);
+      padding: 12px 16px;
       text-decoration: none;
       display: block;
-      font-size: 12px;
-      font-weight: 600;
-      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid var(--bg-body);
+      transition: background 0.2s;
     }
-    .dropdown-content a:hover { background-color: #f8fafc; color: #1e40af; }
-    .dropdown-container:hover .dropdown-content { display: block; }
+    .dropdown-content a:hover { background-color: var(--primary-light); color: var(--primary-dark); padding-left: 20px; }
+    .dropdown-container:hover .dropdown-content { display: block; animation: fadeIn 0.2s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
     /* CSS Tombol Foto */
-    button.btn-photo { background-color: #ea580c; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
-    button.btn-photo:hover { background-color: #c2410c; }
+    button.btn-photo { 
+      background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%); 
+      display: none; 
+      color: white; 
+      border: none; 
+      border-radius: var(--radius-md); 
+      font-size: 13px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      padding: 14px; 
+      flex: 1 1 150px; 
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+    }
+    button.btn-photo:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
     
-    button.btn-wa { background-color: #16a34a; display: none; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; padding: 11px; flex: 1 1 150px; }
-    button.btn-wa:hover { background-color: #15803d; }
+    button.btn-wa { 
+      background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); 
+      display: none; 
+      color: white; 
+      border: none; 
+      border-radius: var(--radius-md); 
+      font-size: 13px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      padding: 14px; 
+      flex: 1 1 150px; 
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+    button.btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
 
-    button.btn-use-max { background-color: #16a34a; color: white; font-size: 10px; padding: 3px 6px; border-radius: 4px; border: none; margin-top: 4px; cursor: pointer; text-align: center; }
-    button.btn-use-max:hover { background-color: #15803d; }
+    button.btn-use-max { 
+      background-color: var(--success-dark); 
+      color: white; 
+      font-size: 11px; 
+      font-weight: 600;
+      padding: 5px 10px; 
+      border-radius: var(--radius-sm); 
+      border: none; 
+      margin-top: 6px; 
+      cursor: pointer; 
+      text-align: center; 
+      transition: var(--transition);
+    }
+    button.btn-use-max:hover { background-color: #047857; }
     
-    .result-box { margin-top: 15px; display: none; }
+    .result-box { margin-top: 30px; display: none; }
     
-    .status-banner { padding: 8px 12px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 12px; }
-    .status-banner.pass { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .status-banner.fail { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .status-banner { padding: 12px 16px; border-radius: var(--radius-md); text-align: center; font-weight: 700; font-size: 13px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+    .status-banner.pass { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .status-banner.fail { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
-    .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 11px; }
-    .pdf-table th, .pdf-table td { padding: 5px 8px; border: 1px solid #cbd5e1; }
-    .pdf-table th { background-color: #f8fafc; text-align: left; color: #334155; font-weight: 600; width: 55%; }
-    .pdf-table td { font-weight: bold; color: #0f172a; text-align: right; }
-    .pdf-table td.highlight { color: #dc2626; }
-    .pdf-table td.success { color: #16a34a; }
-
-    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    .alert-warning { background-color: #ffedd5; border: 1px solid #fed7aa; color: #9a3412; padding: 6px 10px; border-radius: 6px; margin-bottom: 12px; font-size: 11px; }
+    .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; background: white; }
+    .pdf-table th, .pdf-table td { padding: 8px 12px; border: 1px solid var(--border-color); }
+    .pdf-table th { background-color: var(--bg-body); text-align: left; color: var(--text-muted); font-weight: 600; width: 55%; }
+    .pdf-table td { font-weight: 700; color: var(--text-main); text-align: right; }
+    .pdf-table td.highlight { color: var(--danger-dark); }
+    .pdf-table td.success { color: var(--success-dark); }
     
-    .marketing-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; page-break-inside: avoid; }
-    .marketing-info { line-height: 1.4; }
-    .marketing-info strong { color: #1e40af; font-size: 12px; }
-    
-    .pdf-footnote { margin-top: 10px; text-align: center; font-size: 10px; font-style: italic; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 6px; page-break-inside: avoid; }
+    /* Hover state for table rows */
+    .pdf-table tr:hover { background-color: #f8fafc; }
 
-    .table-container { margin-top: 10px; max-height: 350px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; }
-    table.amortization { width: 100%; border-collapse: collapse; font-size: 10px; }
-    table.amortization th, table.amortization td { padding: 5px 6px; border: 1px solid #cbd5e1; text-align: right; }
-    table.amortization th { background-color: #1e40af; color: white; text-align: center; position: sticky; top: 0; }
-    table.amortization tr:nth-child(even) { background-color: #f8fafc; }
+    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .alert-warning { background-color: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 10px 15px; border-radius: var(--radius-md); margin-bottom: 15px; font-size: 12px; font-weight: 500; }
+    
+    .marketing-card { 
+      background: linear-gradient(to right, var(--bg-body), #ffffff); 
+      border: 1px solid var(--border-color); 
+      border-radius: var(--radius-md); 
+      padding: 15px 20px; 
+      margin-top: 20px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      font-size: 12px; 
+      page-break-inside: avoid; 
+      box-shadow: var(--shadow-sm);
+    }
+    .marketing-info { line-height: 1.6; }
+    .marketing-info strong { color: var(--primary-dark); font-size: 14px; font-weight: 700; }
+    
+    .pdf-footnote { margin-top: 15px; text-align: center; font-size: 11px; font-style: italic; color: var(--secondary); border-top: 1px dashed var(--border-color); padding-top: 10px; page-break-inside: avoid; }
+
+    .table-container { margin-top: 15px; max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    
+    /* Scrollbar styling */
+    .table-container::-webkit-scrollbar { width: 6px; }
+    .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
+    .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .table-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    table.amortization { width: 100%; border-collapse: collapse; font-size: 11px; }
+    table.amortization th, table.amortization td { padding: 8px 10px; border-bottom: 1px solid var(--border-color); text-align: right; }
+    table.amortization th { background-color: var(--primary-dark); color: white; text-align: center; position: sticky; top: 0; font-weight: 600; letter-spacing: 0.5px; z-index: 1; }
+    table.amortization tr:nth-child(even) { background-color: var(--bg-body); }
+    table.amortization tr:hover { background-color: var(--primary-light); }
 
     /* CSS Khusus Area Screenshot Foto agar background bersih putih */
     #printEvaluasiArea {
       background-color: #ffffff;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 25px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
     }
 
     @media print {
       body { background: white; margin: 0; padding: 0; }
       .top-bar, .upload-box, #simulasiForm, .area-amortisasi, .page-break, #btnDownloadPhoto, .dropdown-container { display: none !important; }
-      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-      .result-box { display: block !important; }
+      .container, #printEvaluasiArea { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
+      .result-box { display: block !important; margin-top: 0; }
+      .two-column { display: block; }
+      .pdf-table { margin-bottom: 10px; page-break-inside: avoid; }
+    }
+    
+    /* Responsivitas Layar Kecil */
+    @media (max-width: 768px) {
+      .two-column { grid-template-columns: 1fr; gap: 10px; }
+      .container { padding: 20px; }
+      .btn-group { flex-direction: column; }
     }
   </style>
 </head>
@@ -257,14 +452,15 @@
   <div class="container" id="cetakArea">
     <div class="no-print">
         <div class="pdf-header">
+ <img src="https://images.seeklogo.com/logo-png/29/1/bank-bjb-logo-png_seeklogo-298871.png" alt="Logo Bank BJB" style="height: 70px; width: auto;">
           <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
           <p>Analisa & Rincian Pencairan Bersih</p>
         </div>
         
         <div class="upload-box" id="uploadBox">
-          <label style="font-weight:bold;">📁 Load Database Pegawai (.xlsx / .xls):</label>
-          <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px;">
-          <span id="statusUpload" style="margin-left:8px; color:#64748b;">Belum ada file diunggah.</span>
+          <label style="font-weight:700; color:var(--primary-dark);">📁 Load Database Pegawai (.xlsx / .xls):</label>
+          <input type="file" id="excelFile" accept=".xlsx, .xls" onchange="bacaExcel(this)" style="margin-left: 8px; border:none; padding:5px; background:none;">
+          <span id="statusUpload" style="display:block; margin-top:8px; color:var(--secondary);">Belum ada file diunggah.</span>
         </div>
     </div>
 
@@ -272,8 +468,8 @@
       <div class="section-title">I. Data Pemohon & Skema Pengajuan</div>
       <div class="grid">
         <div class="form-group">
-          <label style="color:#2563eb; font-weight:bold;">Tipe Pemohon:</label>
-          <select id="tipePemohon" onchange="updateSkemaDanParameter()" style="font-weight:bold; border-color:#2563eb;">
+          <label style="color:var(--primary); font-weight:700;">Tipe Pemohon:</label>
+          <select id="tipePemohon" onchange="updateSkemaDanParameter()" style="font-weight:600; border-color:var(--primary); background-color:var(--primary-light);">
             <option value="PNS Gaji" selected>PNS Gaji</option>
             <option value="PPPK Gaji">PPPK Gaji</option>
             <option value="PNS TPP">PNS TPP</option>
@@ -291,16 +487,16 @@
           </select>
         </div>
         <div class="form-group">
-          <label id="lblNip" style="color:#1e40af;">NIP Pegawai (Autofill): *</label>
+          <label id="lblNip" style="color:var(--primary-dark);">NIP Pegawai (Autofill): *</label>
           <input type="text" id="nip" placeholder="Ketik NIP..." oninput="cariDataByNip()" onblur="cekNipExistOnBlur()" required>
-          <div class="nip-warning" id="warnNip">⚠️ NIP tidak ditemukan di database Excel. Silakan lanjutkan pengisian data secara manual.</div>
+          <div class="nip-warning" id="warnNip">⚠️ NIP tidak ditemukan di database. Lanjutkan pengisian manual.</div>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af; font-weight:bold;">Nomor CIF (Autofill):</label>
+          <label style="color:var(--primary-dark);">Nomor CIF (Autofill):</label>
           <input type="text" id="cif" class="auto-field" placeholder="Otomatis dari Excel" readonly>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af; font-weight:bold;">Status Pegawai (Autofill):</label>
+          <label style="color:var(--primary-dark);">Status Pegawai (Autofill):</label>
           <input type="text" id="statusPegawai" class="auto-field" placeholder="Otomatis dari Excel / Manual" autocomplete="off">
         </div>
         <div class="form-group">
@@ -308,7 +504,7 @@
           <input type="text" id="nama" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af; font-weight:bold;">No. Handphone / WhatsApp (Autofill):</label>
+          <label style="color:var(--primary-dark);">No. Handphone / WhatsApp (Autofill):</label>
           <input type="text" id="noHp" placeholder="08xxxxxxxxxx" autocomplete="off">
         </div>
         <div class="form-group">
@@ -316,8 +512,8 @@
           <input type="text" id="dinas" required>
         </div>
         <div class="form-group">
-          <label style="color:#2563eb; font-weight:bold;">Jenis Pengajuan Kredit:</label>
-          <select id="jenisPengajuan" onchange="toggleJenisPengajuan()" style="font-weight:bold; border-color:#2563eb;">
+          <label style="color:var(--primary); font-weight:700;">Jenis Pengajuan Kredit:</label>
+          <select id="jenisPengajuan" onchange="toggleJenisPengajuan()" style="font-weight:600; border-color:var(--primary); background-color:var(--primary-light);">
             <option value="NEW">Baru (New)</option>
             <option value="TOPUP">Top Up / Suplesi</option>
             <option value="MENGULANG" selected>Mengulang</option>
@@ -329,7 +525,7 @@
         </div>
 
         <div class="form-group" id="grpTglPengangkatan" style="display: none;">
-          <label style="color:#2563eb; font-weight:bold;">Tanggal Pengangkatan Pegawai:</label>
+          <label style="color:var(--primary); font-weight:700;">Tanggal Pengangkatan Pegawai:</label>
           <input type="date" id="tglPengangkatan">
         </div>
 
@@ -344,12 +540,12 @@
         </div>
 
         <div class="form-group" id="grpGajiPokokTif" style="display: none;">
-          <label style="color:#16a34a; font-weight:bold;">Gaji Pokok (Rp): *</label>
+          <label style="color:var(--success-dark); font-weight:700;">Gaji Pokok (Rp): *</label>
           <input type="text" id="gajiPokokTif" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
         </div>
 
         <div class="form-group" id="grpPerkiraanTht" style="display: none;">
-          <label style="color:#d97706; font-weight:bold;">Perkiraan Uang THT (Rp): *</label>
+          <label style="color:var(--warning); font-weight:700;">Perkiraan Uang THT (Rp): *</label>
           <input type="text" id="perkiraanTht" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0">
         </div>
 
@@ -358,7 +554,7 @@
           <input type="text" id="gaji" oninput="formatRupiahInput(this); hitungPlafondMaksimalOtomatis();" placeholder="0" required>
         </div>
         <div class="form-group">
-          <label style="color:#2563eb; font-weight:bold;">Maks. Persentase RPC (% Otomatis):</label>
+          <label style="color:var(--primary); font-weight:700;">Maks. Persentase RPC (% Otomatis):</label>
           <input type="number" step="any" id="persenGaji" class="auto-field" value="90" min="1" max="100" oninput="hitungPlafondMaksimalOtomatis();" required>
         </div>
       </div>
@@ -371,21 +567,21 @@
         </div>
         
         <div class="form-group grp-pelunasan" id="grpSisaPokok">
-          <label style="color:#b91c1c;">Sisa Pokok Eksisting (Rp):</label>
+          <label style="color:var(--danger-dark);">Sisa Pokok Eksisting (Rp):</label>
           <input type="text" id="sisaPokokEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
         </div>
         <div class="form-group grp-pelunasan" id="grpBungaBerjalan">
-          <label style="color:#b91c1c;">Bunga Berjalan Eksisting (Rp):</label>
+          <label style="color:var(--danger-dark);">Bunga Berjalan Eksisting (Rp):</label>
           <input type="text" id="bungaBerjalanEksisting" oninput="formatRupiahInput(this)" value="0" placeholder="Hasil Excel / Manual">
         </div>
 
         <div class="form-group grp-pelunasan" id="grpPengembalianAsuransi">
-          <label style="color:#b91c1c; font-weight:bold;">Pengembalian Biaya Asuransi (Rp):</label>
+          <label style="color:var(--danger-dark); font-weight:700;">Pengembalian Biaya Asuransi (Rp):</label>
           <input type="text" id="pengembalianAsuransi" oninput="formatRupiahInput(this)" value="0" placeholder="0">
         </div>
 
         <div class="form-group">
-          <label style="color:#15803d; font-weight:bold;">✨ Plafond Maksimal (RPC Otomatis):</label>
+          <label style="color:var(--success-dark); font-weight:700;">✨ Plafond Maksimal (RPC Otomatis):</label>
           <input type="text" id="plafondMaksimalOtomatis" class="auto-field highlight-auto" value="Rp 0" readonly>
           <button type="button" class="btn-use-max" onclick="gunakanPlafondMaksimal()">↙️ Gunakan Plafond Maksimal</button>
         </div>
@@ -396,36 +592,36 @@
         </div>
 
         <div class="form-group" id="grpBiayaNotaris" style="display: none;">
-          <label style="color:#dc2626; font-weight:bold;">Biaya Notaris (Rp) [Plafond ≥ 500Jt]:</label>
+          <label style="color:var(--danger-dark); font-weight:700;">Biaya Notaris (Rp) [Plafond ≥ 500Jt]:</label>
           <input type="text" id="biayaNotaris" oninput="formatRupiahInput(this)" value="0" placeholder="0">
         </div>
 
         <div class="form-group">
-          <label style="color:#1e40af;" id="lblBunga">Bunga Dasar / Tahun (%):</label>
+          <label style="color:var(--primary-dark);" id="lblBunga">Bunga Dasar / Tahun (%):</label>
           <input type="number" step="any" id="bunga" value="12.5" oninput="hitungPlafondMaksimalOtomatis();" required>
         </div>
 
         <div class="form-group" id="grpBungaKedua" style="display: none;">
-          <label style="color:#d97706; font-weight:bold;">Bunga Saat Pensiun / Tahun (%):</label>
+          <label style="color:var(--warning); font-weight:700;">Bunga Saat Pensiun / Tahun (%):</label>
           <input type="number" step="any" id="bungaKedua" value="13.5" oninput="hitungPlafondMaksimalOtomatis();" required>
         </div>
 
         <div class="form-group">
-          <label style="color:#2563eb; font-weight:bold;">Program Asuransi:</label>
-          <select id="progAsuransi" onchange="toggleProgAsuransi(); hitungPlafondMaksimalOtomatis();" style="font-weight:bold;">
+          <label style="color:var(--primary); font-weight:700;">Program Asuransi:</label>
+          <select id="progAsuransi" onchange="toggleProgAsuransi(); hitungPlafondMaksimalOtomatis();" style="font-weight:600;">
             <option value="DENGAN">Dengan Program Asuransi</option>
             <option value="TANPA" selected>Tanpa Program Asuransi</option>
           </select>
         </div>
 
         <div class="form-group" id="grpSpreadBunga" style="display: none;">
-          <label style="color:#d97706; font-weight:bold;">Spread Bunga Asuransi (%):</label>
+          <label style="color:var(--warning); font-weight:700;">Spread Bunga Asuransi (%):</label>
           <input type="number" step="any" id="spreadBunga" value="0.85" oninput="hitungPlafondMaksimalOtomatis();">
         </div>
 
         <div class="form-group" id="grpPersenAsuransi" style="display: none;">
-          <label style="color:#16a34a; font-weight:bold;">Persentase Pengali Asuransi (% Penambah Nett):</label>
-          <select id="persenAsuransi" style="font-weight:bold; border-color:#16a34a;">
+          <label style="color:var(--success-dark); font-weight:700;">Persentase Pengali Asuransi (% Penambah Nett):</label>
+          <select id="persenAsuransi" style="font-weight:600; border-color:var(--success-dark);">
             <option value="25">25% dari Biaya Asuransi</option>
             <option value="50">50% dari Biaya Asuransi</option>
             <option value="75">75% dari Biaya Asuransi</option>
@@ -434,8 +630,8 @@
         </div>
 
         <div class="form-group">
-          <label style="color:#dc2626; font-weight:bold;">Maksimal Tenor (Tipe, Usia & BUP):</label>
-          <input type="text" id="maksTenorDisplay" class="auto-field" style="color:#dc2626; font-weight:bold;" value="300 Bulan" readonly>
+          <label style="color:var(--danger-dark); font-weight:700;">Maksimal Tenor (Tipe, Usia & BUP):</label>
+          <input type="text" id="maksTenorDisplay" class="auto-field" style="color:var(--danger-dark); font-weight:700;" value="300 Bulan" readonly>
         </div>
 
         <div class="form-group">
@@ -443,20 +639,20 @@
           <input type="number" id="tenor" value="38" oninput="validasiInputTenor(); updateProvisiOtomatis(); hitungPlafondMaksimalOtomatis();" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Biaya Administrasi (Otomatis Tiering):</label>
+          <label style="color:var(--primary-dark);">Biaya Administrasi (Otomatis Tiering):</label>
           <input type="text" id="admin" class="auto-field" oninput="formatRupiahInput(this)" value="200.000" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Biaya Provisi :</label>
+          <label style="color:var(--primary-dark);">Biaya Provisi :</label>
           <input type="number" step="any" id="provisi" class="auto-field" value="0.2" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af;">Tarif Asuransi :</label>
+          <label style="color:var(--primary-dark);">Tarif Asuransi :</label>
           <input type="number" step="0.00001" id="tarifAsuransi" class="auto-field" value="0.00500" required>
         </div>
         <div class="form-group">
-          <label style="color:#1e40af; font-weight:bold;">Setoran Tabungan Wajib (Otomatis):</label>
-          <select id="multiplierTabungan" style="font-weight:bold;" class="auto-field">
+          <label style="color:var(--primary-dark); font-weight:700;">Setoran Tabungan Wajib (Otomatis):</label>
+          <select id="multiplierTabungan" style="font-weight:600;" class="auto-field">
             <option value="0">Tidak Ada (0x Angsuran)</option>
             <option value="1" selected>1x Angsuran</option>
             <option value="2">2x Angsuran</option>
@@ -470,15 +666,15 @@
         <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
         
         <div class="dropdown-container" id="dropdownPersyaratanContainer">
-  <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
-  <div class="dropdown-content">
-    <a href="#" onclick="kirimPersyaratanWa('PNS Gaji/TPP')">PNS Gaji / TPP</a>
-    <a href="#" onclick="kirimPersyaratanWa('PPPK Gaji/TPP')">PPPK Gaji / TPP</a>
-    <a href="#" onclick="kirimPersyaratanWa('PPPK TPG')">PPPK TPG</a>
-    <a href="#" onclick="kirimPersyaratanWa('PNS TPG')">PNS Gaji / TPG</a>
-    <a href="#" onclick="kirimPersyaratanWa('Pensiunan')">Pensiunan</a>
-  </div>
-</div>
+          <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="kirimPersyaratanWa('PNS Gaji/TPP')">PNS Gaji / TPP</a>
+            <a href="#" onclick="kirimPersyaratanWa('PPPK Gaji/TPP')">PPPK Gaji / TPP</a>
+            <a href="#" onclick="kirimPersyaratanWa('PPPK TPG')">PPPK TPG</a>
+            <a href="#" onclick="kirimPersyaratanWa('PNS TPG')">PNS Gaji / TPG</a>
+            <a href="#" onclick="kirimPersyaratanWa('Pensiunan')">Pensiunan</a>
+          </div>
+        </div>
 
         <button type="button" class="btn-wa" id="btnKirimWa" onclick="kirimWhatsApp()">📲 Kirim Penawaran WA</button>
       </div>
@@ -497,56 +693,58 @@
 
         <div class="two-column">
           <table class="pdf-table">
-            <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:#1e40af;">-</td></tr>
-            <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:#1e40af;">-</td></tr>
-            <tr><th>Gaji Bersih</th><td id="resGajiBersih" style="color:#1e40af;">-</td></tr>
-            <tr><th>Plafon Diajukan</th><td id="resPlafonDiajukan" style="color:#16a34a;">-</td></tr>
-            <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:#d97706;">-</td></tr>
-            <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:#1e40af;">-</td></tr>
-            <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:#d97706;">-</td></tr>
-            <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia">-</td></tr>
-            <tr><th>Tenor Diajukan</th><td id="resMaksTenor" class="highlight">-</td></tr>
-            <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji">-</td></tr>
-            <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success">-</td></tr>
-            <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight">-</td></tr>
-            <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:#1e40af;">-</td></tr>
-            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight">-</td></tr>
-            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight">-</td></tr>
+            <tr><th>Nama Calon Debitur</th><td id="resNamaDebitur" style="color:var(--primary-dark);"> - </td></tr>
+            <tr><th>Tipe Pemohon</th><td id="resTipePemohon" style="color:var(--primary-dark);"> - </td></tr>
+            <tr><th>Gaji Bersih</th><td id="resGajiBersih" style="color:var(--primary-dark);"> - </td></tr>
+            <tr><th>Plafon Diajukan</th><td id="resPlafonDiajukan" style="color:var(--success-dark);"> - </td></tr>
+            <tr id="rowResPerkiraanTht" style="display:none;"><th>Perkiraan Uang THT</th><td id="resPerkiraanTht" style="color:var(--warning);"> - </td></tr>
+            <tr><th>Jenis Pengajuan</th><td id="resJenisPengajuan" style="color:var(--primary-dark);"> - </td></tr>
+            <tr><th>Bunga Efektif Dipakai</th><td id="resBungaTotal" style="color:var(--warning);"> - </td></tr>
+            <tr><th>Usia Pemohon Saat Ini</th><td id="resUsia"> - </td></tr>
+            <tr><th>Tenor Diajukan</th><td id="resMaksTenor" class="highlight"> - </td></tr>
+            <tr><th>Batas Maks. Angsuran RPC</th><td id="resMaksAngsuranGaji"> - </td></tr>
+            <tr><th>Maks. Plafond Berdasarkan RPC</th><td id="resMaksPlafondDsr" class="success"> - </td></tr>
+            <tr><th>Angsuran Pinjaman Baru</th><td id="resAngsuranBaru" class="highlight"> - </td></tr>
+            <tr id="rowResTotalAngsuran"><th>Total Angsuran (Lama + Baru)</th><td id="resTotalAngsuran" style="color:var(--primary-dark);"> - </td></tr>
+            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Sisa Pokok Eksisting</th><td id="resSisaPokokEks" class="highlight"> - </td></tr>
+            <tr class="row-pelunasan-res" style="background:#fef2f2;"><th>Pelunasan Bunga Berjalan</th><td id="resBungaBerjalanEks" class="highlight"> - </td></tr>
           </table>
 
           <table class="pdf-table">
-            <tr><th>Biaya Administrasi</th><td id="resAdmin">-</td></tr>
-            <tr><th>Biaya Provisi</th><td id="resProvisi">-</td></tr>
-            <tr id="rowResBungaDimuka" style="display:none; background:#fff7ed;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight">-</td></tr>
-            <tr id="rowResBungaGrace" style="display:none; background:#fff7ed;"><th>Akumulasi Bunga Grace Period (Dipotong Awal)</th><td id="resBungaGrace" class="highlight">-</td></tr>
-            <tr><th>Biaya Asuransi</th><td id="resAsuransi">-</td></tr>
-            <tr id="rowResAsuransiPenambah" style="display:none; background:#f0fdf4;"><th>Penambah Asuransi (+)</th><td id="resAsuransiPenambah" class="success">-</td></tr>
-            <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight">-</td></tr>
-            <tr class="row-pelunasan-res" style="background:#fff7ed;"><th>Pengembalian Biaya Asuransi (-)</th><td id="resPengembalianAsuransi" class="highlight">-</td></tr>
-            <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan">-</td></tr>
-            <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight">-</td></tr>
-            <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight">-</td></tr>
-            <tr style="background:#f0fdf4;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:13px;">-</td></tr>
+            <tr><th>Biaya Administrasi</th><td id="resAdmin"> - </td></tr>
+            <tr><th>Biaya Provisi</th><td id="resProvisi"> - </td></tr>
+            <tr id="rowResBungaDimuka" style="display:none; background:#fffbeb;"><th>Bunga Dimuka (Dipotong Awal)</th><td id="resBungaDimuka" class="highlight"> - </td></tr>
+            <tr id="rowResBungaGrace" style="display:none; background:#fffbeb;"><th>Akumulasi Bunga Grace Period (Dipotong Awal)</th><td id="resBungaGrace" class="highlight"> - </td></tr>
+            <tr><th>Biaya Asuransi</th><td id="resAsuransi"> - </td></tr>
+            <tr id="rowResAsuransiPenambah" style="display:none; background:#ecfdf5;"><th>Penambah Asuransi (+)</th><td id="resAsuransiPenambah" class="success"> - </td></tr>
+            <tr id="rowResNotaris" style="display:none; background:#fef2f2;"><th>Biaya Notaris (Plafond ≥ 500Jt)</th><td id="resBiayaNotaris" class="highlight"> - </td></tr>
+            <tr class="row-pelunasan-res" style="background:#fffbeb;"><th>Pengembalian Biaya Asuransi (-)</th><td id="resPengembalianAsuransi" class="highlight"> - </td></tr>
+            <tr><th id="lblTabungan">Tabungan Wajib</th><td id="resTabungan"> - </td></tr>
+            <tr><th>Total Biaya Potongan Bank</th><td id="resTotalBiaya" class="highlight"> - </td></tr>
+            <tr class="row-pelunasan-res" style="background:#fff1f2;"><th>Total Pelunasan Eksisting</th><td id="resTotalPelunasanEks" class="highlight"> - </td></tr>
+            <tr style="background:#ecfdf5;"><th>Pencairan Bersih (Nett)</th><td id="resPencairan" class="success" style="font-size:14px; font-weight:800;"> - </td></tr>
           </table>
         </div>
 
         <div class="marketing-card">
           <div class="marketing-info">
-            <span style="color:#64748b;">Account Officer Konsumer & Ritel:</span><br>
+            <span style="color:var(--secondary);">Account Officer Konsumer & Ritel:</span><br>
             <strong id="aoNamaDisplay">Didin Koharudin</strong><br>
             <span>No. HP / WhatsApp: <b id="aoHpDisplay">08111292999</b></span>
           </div>
-          <div style="text-align: right; color:#64748b; font-size: 10px;">
+          <div style="text-align: right; color:var(--secondary); font-size: 11px;">
             <span>Tanggal Simulasi:</span><br>
-            <strong id="tglSimulasi" style="color:#0f172a;">-</strong>
+            <strong id="tglSimulasi" style="color:var(--text-main);"> - </strong>
           </div>
         </div>
 
         <div class="pdf-footnote">
           * Catatan: simulasi kredit ini tidak mengikat sepenuhnya & dapat berubah sesuai dengan ketentuan yang berlaku
         </div>
-      </div> <div class="area-amortisasi">
-        <div class="pdf-header" style="margin-top: 25px;">
+      </div> 
+      
+      <div class="area-amortisasi">
+        <div class="pdf-header" style="margin-top: 35px;">
           <h2>TABEL ANGSURAN KREDIT</h2>
           <p id="subHeaderDebitur">Rincian Pokok, Bunga & Sisa Pinjaman Per Bulan</p>
         </div>
@@ -1730,12 +1928,13 @@
     const nama = document.getElementById('nama').value || 'Bapak/Ibu';
     const username = document.getElementById('username').value;
     const tipePemohon = document.getElementById('tipePemohon').value;
+    const jenisPengajuan = document.getElementById('JenisPengajuan').value;
     const plafon = document.getElementById('resPlafonDiajukan').innerText;
     const tenor = document.getElementById('resMaksTenor').innerText;
     const angsuran = document.getElementById('resAngsuranBaru').innerText;
     const pencairan = document.getElementById('resPencairan').innerText;
 
-    const pesanWA = `Halo ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+    const pesanWA = `Halo ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
 
     const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
     
