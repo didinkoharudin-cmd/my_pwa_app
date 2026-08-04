@@ -309,6 +309,22 @@
     }
     button.btn-photo:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
     
+    button.btn-excel-report {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      display: none;
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 14px;
+      flex: 1 1 150px;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+    button.btn-excel-report:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
+
     button.btn-wa { 
       background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); 
       display: none; 
@@ -417,7 +433,6 @@
       
       .login-card { padding: 25px 20px; }
       
-      /* Baris atas dirubah menjadi kolom bersusun */
       .top-bar { 
         flex-direction: column; 
         gap: 12px; 
@@ -425,25 +440,19 @@
         padding: 15px; 
       }
       
-      /* Ruang kosong ditepi disesuaikan */
       .container { padding: 20px 15px; }
       #printEvaluasiArea { padding: 15px; }
       
-      /* Tabel dua kolom dipisah menjadi satu kolom */
       .two-column { grid-template-columns: 1fr; gap: 15px; }
       
-      /* Layout tombol menjadi berurut ke bawah */
       .btn-group { flex-direction: column; gap: 10px; }
       .btn-group button, .dropdown-container { width: 100%; flex: none; display: block; }
       button.btn-pdf { width: 100%; }
       
-      /* Tabel rincian evaluasi: menyesuaikan ukuran font dan padding */
       .pdf-table th, .pdf-table td { padding: 8px 6px; font-size: 11px; }
       
-      /* Tabel amortisasi: Mencegah teks hancur dengan memberikan lebar minimum lalu scroll horizontal */
       table.amortization { min-width: 500px; }
       
-      /* Susunan Marketing Card menjadi bertumpuk */
       .marketing-card { 
         flex-direction: column; 
         text-align: center; 
@@ -451,7 +460,6 @@
       }
       .marketing-card > div { text-align: center !important; }
       
-      /* Mencegah auto-zoom di iOS Safari saat fokus input */
       input, select, textarea { font-size: 16px !important; }
     }
   </style>
@@ -488,7 +496,7 @@
   <div class="container" id="cetakArea">
     <div class="no-print">
         <div class="pdf-header">
- <img src="https://images.seeklogo.com/logo-png/29/1/bank-bjb-logo-png_seeklogo-298871.png" alt="Logo Bank BJB" style="height: 70px; width: auto;">
+          <img src="https://images.seeklogo.com/logo-png/29/1/bank-bjb-logo-png_seeklogo-298871.png" alt="Logo Bank BJB" style="height: 70px; width: auto;">
           <h2>SIMULASI KREDIT KONSUMER & RITEL KARAWANG</h2>
           <p>Analisa & Rincian Pencairan Bersih</p>
         </div>
@@ -525,11 +533,11 @@
         <div class="form-group">
           <label id="lblNip" style="color:var(--primary-dark);">NIP Pegawai (Autofill): *</label>
           <input type="text" id="nip" placeholder="Ketik NIP..." oninput="cariDataByNip()" onblur="cekNipExistOnBlur()" required>
-          <div class="nip-warning" id="warnNip">⚠️ NIP tidak ditemukan di database. Lanjutkan pengisian manual.</div>
+          <div class="nip-warning" id="warnNip">⚠️ NIP / CIF tidak ditemukan di database. Lanjutkan pengisian manual.</div>
         </div>
         <div class="form-group">
-          <label style="color:var(--primary-dark);">Nomor CIF (Autofill):</label>
-          <input type="text" id="cif" class="auto-field" placeholder="Otomatis dari Excel" readonly>
+          <label style="color:var(--primary-dark);">Nomor CIF (Autofill / Cari):</label>
+          <input type="text" id="cif" placeholder="Ketik CIF..." oninput="cariDataByCif()" onblur="cekNipExistOnBlur()">
         </div>
         <div class="form-group">
           <label style="color:var(--primary-dark);">Status Pegawai (Autofill):</label>
@@ -700,9 +708,7 @@
       <div class="btn-group" id="actionButtons">
         <button type="submit" class="btn-submit">Hitung Simulasi & Evaluasi Limit</button>
         <button type="button" class="btn-photo" id="btnDownloadPhoto" onclick="generateFoto()">📸 Generate Foto Ringkasan</button>
-        <!-- Tombol Download Report Excel & PDF Baru -->
-<button type="button" class="btn-excel-report" id="btnexcelreport" onclick="exportExcelReport()">
-  📊 Download Report Excel</button>
+        <button type="button" class="btn-excel-report" id="btnexcelreport" onclick="exportExcelReport()">📊 Download Report Excel</button>
 
         <div class="dropdown-container" id="dropdownPersyaratanContainer">
           <button type="button" class="btn-pdf" id="btnDownloadPdf">📋 Kirim Persyaratan WA ▾</button>
@@ -999,7 +1005,7 @@
     if (tipe === 'Prapurnabakti G7G') {
       grpBungaKedua.style.display = 'flex';
       lblBunga.innerHTML = "Bunga Grace Period / Tahun (%):";
-      bungaInput.value = 12.5;
+      bungaInput.value = 8 ;
     } else {
       grpBungaKedua.style.display = 'none';
       lblBunga.innerHTML = "Bunga Dasar / Tahun (%):";
@@ -1192,7 +1198,7 @@
     if (tipePemohon === 'Kredit THT') {
       const perkiraanTht = parseInputValue('perkiraanTht');
       nilaiPlafondMaksimalCalc = Math.floor(perkiraanTht * (persenGaji / 100));
-      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000;
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
       return;
     }
@@ -1218,7 +1224,7 @@
         nilaiPlafondMaksimalCalc = 0;
       }
       
-      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000;
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
       return;
     }
@@ -1232,7 +1238,7 @@
         : kapasitasAngsuranBaru * n;
 
       nilaiPlafondMaksimalCalc = Math.floor(maksPlafondRpc);
-      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000; // Pembulatan jutaan ke bawah
+      nilaiPlafondMaksimalCalc = Math.floor(nilaiPlafondMaksimalCalc / 1000000) * 1000000;
       
       document.getElementById('plafondMaksimalOtomatis').value = fmt.format(nilaiPlafondMaksimalCalc);
     } else {
@@ -1324,19 +1330,126 @@
     reader.readAsArrayBuffer(file);
   }
 
+  function isiFormDariDatabase(peg) {
+    const warnNip = document.getElementById('warnNip');
+    const jenisPengajuan = document.getElementById('jenisPengajuan').value;
+    const tipePemohon = document.getElementById('tipePemohon').value;
+
+    warnNip.style.display = 'none';
+
+    const valNip = getValueByFlexibleKey(peg, ['NIP', 'NIK', 'No Pegawai', 'Nomor Pegawai']);
+    if (valNip) document.getElementById('nip').value = String(valNip).trim();
+
+    const valCif = getValueByFlexibleKey(peg, ['CIF', 'No CIF', 'Nomor CIF', 'CIF Pegawai', 'No. CIF']);
+    if (valCif) document.getElementById('cif').value = String(valCif).trim();
+
+    const valStatusPeg = getValueByFlexibleKey(peg, ['Status', 'Status Pegawai', 'Status Kepegawaian', 'StatusPegawai']);
+    if (valStatusPeg !== null) {
+      document.getElementById('statusPegawai').value = String(valStatusPeg).trim();
+    }
+
+    const valNama = getValueByFlexibleKey(peg, ['Nama', 'Nama Pegawai', 'Nama Pemohon']);
+    if (valNama) document.getElementById('nama').value = valNama;
+
+    const valHp = getValueByFlexibleKey(peg, ['No HP', 'No. HP', 'Telepon', 'No Telepon', 'Nomor HP', 'Handphone', 'WhatsApp', 'No. Handphone']);
+    if (valHp !== null) document.getElementById('noHp').value = String(valHp).trim();
+
+    const valDinas = getValueByFlexibleKey(peg, ['Dinas', 'Instansi', 'Unit Kerja']);
+    if (valDinas) document.getElementById('dinas').value = valDinas;
+
+    let keysGaji = [];
+    if (tipePemohon === 'Prapurnabakti G7G') {
+      keysGaji = ['Gaji Pensiun', 'Gaji Pensiun TIF', 'Pensiun TIF', 'Perkiraan Gaji Pensiun', 'Gaji Pensiun / Bulan'];
+    } else if (tipePemohon.includes('TPP')) {
+      keysGaji = ['TPP', 'Penghasilan TPP', 'Gaji TPP', 'Nominal TPP', 'TPP Bersih', 'Tunjangan TPP'];
+    } else if (tipePemohon.includes('TPG')) {
+      keysGaji = ['TPG', 'Penghasilan TPG', 'Gaji TPG', 'Nominal TPG', 'TPG Bersih', 'Tunjangan TPG'];
+    } else {
+      keysGaji = ['Gaji', 'Gaji Bersih', 'Gaji Pemohon', 'Gaji Bersi', 'Gaji Pokok', 'Penghasilan'];
+    }
+
+    const valGaji = getValueByFlexibleKey(peg, keysGaji);
+    if (valGaji !== null) setInputValueFormatted('gaji', cleanNumber(valGaji));
+
+    const valGajiPokok = getValueByFlexibleKey(peg, ['Gaji Pokok', 'GajiPokok', 'TIF', 'Gaji Pokok ']);
+    if (valGajiPokok !== null) setInputValueFormatted('gajiPokokTif', cleanNumber(valGajiPokok));
+
+    const valTht = getValueByFlexibleKey(peg, ['Estimasi THT', 'Perkiraan THT', 'Nominal THT', 'THT', 'EstimasiTHT']);
+    if (valTht !== null) setInputValueFormatted('perkiraanTht', cleanNumber(valTht));
+
+    const valTglPengangkatan = getValueByFlexibleKey(peg, ['TglPengangkatan', 'Tgl Pengangkatan', 'Tanggal Pengangkatan', 'TGL_PENGANGKATAN']);
+    if (valTglPengangkatan) {
+      let dateObjP = new Date(valTglPengangkatan);
+      if (!isNaN(dateObjP.getTime())) {
+        let userOffsetP = dateObjP.getTimezoneOffset() * 60000;
+        let correctedDateP = new Date(dateObjP.getTime() + userOffsetP);
+        document.getElementById('tglPengangkatan').value = correctedDateP.toISOString().split('T')[0];
+      }
+    }
+
+    let keysAngsuran = [];
+    let keysSisaPokok = [];
+    let keysBungaBerjalan = [];
+
+    if (tipePemohon.includes('TPP')) {
+      keysAngsuran = ['Angsuran TPP', 'AngsuranLama TPP', 'Kewajiban TPP', 'Cicilan TPP'];
+      keysSisaPokok = ['Sisa Pokok TPP', 'SisaPokok TPP', 'Pokok TPP', 'Pelunasan Pokok TPP', 'Sisa Plafond TPP'];
+      keysBungaBerjalan = ['Bunga Berjalan TPP', 'BungaBerjalan TPP', 'Bunga TPP', 'Pelunasan Bunga TPP'];
+    } else if (tipePemohon.includes('TPG')) {
+      keysAngsuran = ['Angsuran TPG', 'AngsuranLama TPG', 'Kewajiban TPG', 'Cicilan TPG'];
+      keysSisaPokok = ['Sisa Pokok TPG', 'SisaPokok TPG', 'Pokok TPG', 'Pelunasan Pokok TPG', 'Sisa Plafond TPG'];
+      keysBungaBerjalan = ['Bunga Berjalan TPG', 'BungaBerjalan TPG', 'Bunga TPG', 'Pelunasan Bunga TPG'];
+    } else {
+      keysAngsuran = ['Angsuran Gaji', 'AngsuranLama Gaji', 'Kewajiban Gaji', 'Cicilan Gaji'];
+      keysSisaPokok = ['Sisa Pokok Gaji', 'SisaPokok Gaji', 'Pokok Gaji', 'Pelunasan Pokok Gaji', 'Sisa Plafond Gaji'];
+      keysBungaBerjalan = ['Bunga Berjalan Gaji', 'BungaBerjalan Gaji', 'Bunga TPG', 'Pelunasan Bunga Gaji'];
+    }
+
+    keysAngsuran.push('AngsuranLama', 'Angsuran Eksisting', 'Angsuran Lama', 'Kewajiban', 'Cicilan');
+    keysSisaPokok.push('Sisa Pokok', 'SisaPokok', 'Pokok Eksisting', 'Pelunasan Pokok', 'Sisa Plafond');
+    keysBungaBerjalan.push('Bunga Berjalan', 'BungaBerjalan', 'Bunga Eksisting', 'Pelunasan Bunga');
+
+    if (jenisPengajuan !== 'MENGULANG') {
+      const valAngsuran = getValueByFlexibleKey(peg, keysAngsuran);
+      setInputValueFormatted('angsuranEksisting', valAngsuran !== null ? cleanNumber(valAngsuran) : 0);
+    }
+
+    const valSisaPokok = getValueByFlexibleKey(peg, keysSisaPokok);
+    setInputValueFormatted('sisaPokokEksisting', valSisaPokok !== null ? cleanNumber(valSisaPokok) : 0);
+
+    const valBungaBerjalan = getValueByFlexibleKey(peg, keysBungaBerjalan);
+    setInputValueFormatted('bungaBerjalanEksisting', valBungaBerjalan !== null ? cleanNumber(valBungaBerjalan) : 0);
+
+    const valReturnAsuransi = getValueByFlexibleKey(peg, ['Pengembalian Asuransi', 'PengembalianAsuransi', 'Restitusi Asuransi', 'Return Asuransi']);
+    if (valReturnAsuransi !== null) setInputValueFormatted('pengembalianAsuransi', cleanNumber(valReturnAsuransi));
+
+    const valNotaris = getValueByFlexibleKey(peg, ['Biaya Notaris', 'Notaris', 'BiayaNotaris', 'Biaya Notariat']);
+    if (valNotaris !== null) setInputValueFormatted('biayaNotaris', cleanNumber(valNotaris));
+
+    const valBup = getValueByFlexibleKey(peg, ['BUP', 'Bup', 'Batas Usia Pensiun']);
+    if (valBup) document.getElementById('bup').value = String(cleanNumber(valBup));
+
+    const valTgl = getValueByFlexibleKey(peg, ['TglLahir', 'TanggalLahir', 'Tanggal Lahir', 'TGL_LAHIR']);
+    if (valTgl) {
+      let dateObj = new Date(valTgl);
+      if (!isNaN(dateObj.getTime())) {
+        let userOffset = dateObj.getTimezoneOffset() * 60000;
+        let correctedDate = new Date(dateObj.getTime() + userOffset);
+        document.getElementById('tglLahir').value = correctedDate.toISOString().split('T')[0];
+        updateTarifAsuransiOtomatis();
+      }
+    }
+  }
+
   function cariDataByNip() {
     const nipInput = document.getElementById('nip').value.trim();
     const warnNip = document.getElementById('warnNip');
-    const jenisPengajuan = document.getElementById('jenisPengajuan').value;
 
     if (!nipInput) {
       warnNip.style.display = 'none';
-      document.getElementById('cif').value = '';
-      document.getElementById('statusPegawai').value = '';
       return;
     }
 
-    const tipePemohon = document.getElementById('tipePemohon').value;
     const cleanNipInput = nipInput.replace(/[^0-9]/g, '');
 
     let peg = null;
@@ -1348,107 +1461,7 @@
     }
 
     if (peg) {
-      warnNip.style.display = 'none';
-
-      const valCif = getValueByFlexibleKey(peg, ['CIF', 'No CIF', 'Nomor CIF', 'CIF Pegawai', 'No. CIF']);
-      document.getElementById('cif').value = valCif ? String(valCif).trim() : '-';
-
-      const valStatusPeg = getValueByFlexibleKey(peg, ['Status', 'Status Pegawai', 'Status Kepegawaian', 'StatusPegawai']);
-      if (valStatusPeg !== null) {
-        document.getElementById('statusPegawai').value = String(valStatusPeg).trim();
-      }
-
-      const valNama = getValueByFlexibleKey(peg, ['Nama', 'Nama Pegawai', 'Nama Pemohon']);
-      if (valNama) document.getElementById('nama').value = valNama;
-
-      const valHp = getValueByFlexibleKey(peg, ['No HP', 'No. HP', 'Telepon', 'No Telepon', 'Nomor HP', 'Handphone', 'WhatsApp', 'No. Handphone']);
-      if (valHp !== null) document.getElementById('noHp').value = String(valHp).trim();
-
-      const valDinas = getValueByFlexibleKey(peg, ['Dinas', 'Instansi', 'Unit Kerja']);
-      if (valDinas) document.getElementById('dinas').value = valDinas;
-
-      let keysGaji = [];
-      if (tipePemohon === 'Prapurnabakti G7G') {
-        keysGaji = ['Gaji Pensiun', 'Gaji Pensiun TIF', 'Pensiun TIF', 'Perkiraan Gaji Pensiun', 'Gaji Pensiun / Bulan'];
-      } else if (tipePemohon.includes('TPP')) {
-        keysGaji = ['TPP', 'Penghasilan TPP', 'Gaji TPP', 'Nominal TPP', 'TPP Bersih', 'Tunjangan TPP'];
-      } else if (tipePemohon.includes('TPG')) {
-        keysGaji = ['TPG', 'Penghasilan TPG', 'Gaji TPG', 'Nominal TPG', 'TPG Bersih', 'Tunjangan TPG'];
-      } else {
-        keysGaji = ['Gaji', 'Gaji Bersih', 'Gaji Pemohon', 'Gaji Bersi', 'Gaji Pokok', 'Penghasilan'];
-      }
-
-      const valGaji = getValueByFlexibleKey(peg, keysGaji);
-      if (valGaji !== null) setInputValueFormatted('gaji', cleanNumber(valGaji));
-
-      const valGajiPokok = getValueByFlexibleKey(peg, ['Gaji Pokok', 'GajiPokok', 'TIF', 'Gaji Pokok ']);
-      if (valGajiPokok !== null) setInputValueFormatted('gajiPokokTif', cleanNumber(valGajiPokok));
-
-      const valTht = getValueByFlexibleKey(peg, ['Estimasi THT', 'Perkiraan THT', 'Nominal THT', 'THT', 'EstimasiTHT']);
-      if (valTht !== null) setInputValueFormatted('perkiraanTht', cleanNumber(valTht));
-
-      const valTglPengangkatan = getValueByFlexibleKey(peg, ['TglPengangkatan', 'Tgl Pengangkatan', 'Tanggal Pengangkatan', 'TGL_PENGANGKATAN']);
-      if (valTglPengangkatan) {
-        let dateObjP = new Date(valTglPengangkatan);
-        if (!isNaN(dateObjP.getTime())) {
-          let userOffsetP = dateObjP.getTimezoneOffset() * 60000;
-          let correctedDateP = new Date(dateObjP.getTime() + userOffsetP);
-          document.getElementById('tglPengangkatan').value = correctedDateP.toISOString().split('T')[0];
-        }
-      }
-
-      let keysAngsuran = [];
-      let keysSisaPokok = [];
-      let keysBungaBerjalan = [];
-
-      if (tipePemohon.includes('TPP')) {
-        keysAngsuran = ['Angsuran TPP', 'AngsuranLama TPP', 'Kewajiban TPP', 'Cicilan TPP'];
-        keysSisaPokok = ['Sisa Pokok TPP', 'SisaPokok TPP', 'Pokok TPP', 'Pelunasan Pokok TPP', 'Sisa Plafond TPP'];
-        keysBungaBerjalan = ['Bunga Berjalan TPP', 'BungaBerjalan TPP', 'Bunga TPP', 'Pelunasan Bunga TPP'];
-      } else if (tipePemohon.includes('TPG')) {
-        keysAngsuran = ['Angsuran TPG', 'AngsuranLama TPG', 'Kewajiban TPG', 'Cicilan TPG'];
-        keysSisaPokok = ['Sisa Pokok TPG', 'SisaPokok TPG', 'Pokok TPG', 'Pelunasan Pokok TPG', 'Sisa Plafond TPG'];
-        keysBungaBerjalan = ['Bunga Berjalan TPG', 'BungaBerjalan TPG', 'Bunga TPG', 'Pelunasan Bunga TPG'];
-      } else {
-        keysAngsuran = ['Angsuran Gaji', 'AngsuranLama Gaji', 'Kewajiban Gaji', 'Cicilan Gaji'];
-        keysSisaPokok = ['Sisa Pokok Gaji', 'SisaPokok Gaji', 'Pokok Gaji', 'Pelunasan Pokok Gaji', 'Sisa Plafond Gaji'];
-        keysBungaBerjalan = ['Bunga Berjalan Gaji', 'BungaBerjalan Gaji', 'Bunga TPG', 'Pelunasan Bunga Gaji'];
-      }
-
-      keysAngsuran.push('AngsuranLama', 'Angsuran Eksisting', 'Angsuran Lama', 'Kewajiban', 'Cicilan');
-      keysSisaPokok.push('Sisa Pokok', 'SisaPokok', 'Pokok Eksisting', 'Pelunasan Pokok', 'Sisa Plafond');
-      keysBungaBerjalan.push('Bunga Berjalan', 'BungaBerjalan', 'Bunga Eksisting', 'Pelunasan Bunga');
-
-      if (jenisPengajuan !== 'MENGULANG') {
-        const valAngsuran = getValueByFlexibleKey(peg, keysAngsuran);
-        setInputValueFormatted('angsuranEksisting', valAngsuran !== null ? cleanNumber(valAngsuran) : 0);
-      }
-
-      const valSisaPokok = getValueByFlexibleKey(peg, keysSisaPokok);
-      setInputValueFormatted('sisaPokokEksisting', valSisaPokok !== null ? cleanNumber(valSisaPokok) : 0);
-
-      const valBungaBerjalan = getValueByFlexibleKey(peg, keysBungaBerjalan);
-      setInputValueFormatted('bungaBerjalanEksisting', valBungaBerjalan !== null ? cleanNumber(valBungaBerjalan) : 0);
-
-      const valReturnAsuransi = getValueByFlexibleKey(peg, ['Pengembalian Asuransi', 'PengembalianAsuransi', 'Restitusi Asuransi', 'Return Asuransi']);
-      if (valReturnAsuransi !== null) setInputValueFormatted('pengembalianAsuransi', cleanNumber(valReturnAsuransi));
-
-      const valNotaris = getValueByFlexibleKey(peg, ['Biaya Notaris', 'Notaris', 'BiayaNotaris', 'Biaya Notariat']);
-      if (valNotaris !== null) setInputValueFormatted('biayaNotaris', cleanNumber(valNotaris));
-
-      const valBup = getValueByFlexibleKey(peg, ['BUP', 'Bup', 'Batas Usia Pensiun']);
-      if (valBup) document.getElementById('bup').value = String(cleanNumber(valBup));
-
-      const valTgl = getValueByFlexibleKey(peg, ['TglLahir', 'TanggalLahir', 'Tanggal Lahir', 'TGL_LAHIR']);
-      if (valTgl) {
-        let dateObj = new Date(valTgl);
-        if (!isNaN(dateObj.getTime())) {
-          let userOffset = dateObj.getTimezoneOffset() * 60000;
-          let correctedDate = new Date(dateObj.getTime() + userOffset);
-          document.getElementById('tglLahir').value = correctedDate.toISOString().split('T')[0];
-          updateTarifAsuransiOtomatis();
-        }
-      }
+      isiFormDariDatabase(peg);
     } else {
       if (databasePegawai.length > 0 && cleanNipInput.length >= 3) {
         warnNip.style.display = 'block';
@@ -1461,22 +1474,62 @@
     hitungPlafondMaksimalOtomatis();
   }
 
-  function cekNipExistOnBlur() {
-    const nipInput = document.getElementById('nip').value.trim();
+  /* --- FUNGSI PENCARIAN BERDASARKAN CIF (DITAMBAHKAN) --- */
+  function cariDataByCif() {
+    const cifInput = document.getElementById('cif').value.trim();
     const warnNip = document.getElementById('warnNip');
 
-    if (!nipInput) {
+    if (!cifInput) {
+      warnNip.style.display = 'none';
+      return;
+    }
+
+    const cleanCifInput = cifInput.replace(/[^0-9a-zA-Z]/g, '').toLowerCase();
+
+    let peg = null;
+    if (databasePegawai.length > 0) {
+      peg = databasePegawai.find(p => {
+        const valCif = getValueByFlexibleKey(p, ['CIF', 'No CIF', 'Nomor CIF', 'CIF Pegawai', 'No. CIF']);
+        return valCif ? String(valCif).replace(/[^0-9a-zA-Z]/g, '').toLowerCase() === cleanCifInput : false;
+      });
+    }
+
+    if (peg) {
+      isiFormDariDatabase(peg);
+    } else {
+      if (databasePegawai.length > 0 && cleanCifInput.length >= 3) {
+        warnNip.style.display = 'block';
+      } else {
+        warnNip.style.display = 'none';
+      }
+    }
+    hitungMaksimalTenorOtomatis();
+    updateBiayaAdminOtomatis();
+    hitungPlafondMaksimalOtomatis();
+  }
+
+  function cekNipExistOnBlur() {
+    const nipInput = document.getElementById('nip').value.trim();
+    const cifInput = document.getElementById('cif').value.trim();
+    const warnNip = document.getElementById('warnNip');
+
+    if (!nipInput && !cifInput) {
       warnNip.style.display = 'none';
       return;
     }
 
     const cleanNipInput = nipInput.replace(/[^0-9]/g, '');
+    const cleanCifInput = cifInput.replace(/[^0-9a-zA-Z]/g, '').toLowerCase();
+
     let peg = databasePegawai.find(p => {
       const valNip = getValueByFlexibleKey(p, ['NIP', 'NIK', 'No Pegawai', 'Nomor Pegawai']);
-      return valNip ? String(valNip).replace(/[^0-9]/g, '') === cleanNipInput : false;
+      const valCif = getValueByFlexibleKey(p, ['CIF', 'No CIF', 'Nomor CIF', 'CIF Pegawai', 'No. CIF']);
+      const matchNip = cleanNipInput && valNip && String(valNip).replace(/[^0-9]/g, '') === cleanNipInput;
+      const matchCif = cleanCifInput && valCif && String(valCif).replace(/[^0-9a-zA-Z]/g, '').toLowerCase() === cleanCifInput;
+      return matchNip || matchCif;
     });
 
-    if (!peg) {
+    if (!peg && (cleanNipInput.length >= 3 || cleanCifInput.length >= 3)) {
       warnNip.style.display = 'block';
     } else {
       warnNip.style.display = 'none';
@@ -1841,7 +1894,8 @@
     document.getElementById('btnDownloadPhoto').style.display = 'inline-block';
     document.getElementById('dropdownPersyaratanContainer').style.display = 'inline-block';
     document.getElementById('btnKirimWa').style.display = 'inline-block'; 
-    document.getElementById('btnexcelreport').style.display = 'inline-block';  }
+    document.getElementById('btnexcelreport').style.display = 'inline-block';  
+  }
 
   function generateFoto() {
     const element = document.getElementById('printEvaluasiArea');
@@ -1952,11 +2006,44 @@
     window.open(linkWA, '_blank');
   }
 
+  function simpanPenawaranKeRiwayat() {
+    const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Admin';
+    const namaDebitur = document.getElementById('resNamaDebitur').innerText;
+    const dinas = document.getElementById('dinas').value || '-';
+    const cif = document.getElementById('cif').value || '-';
+    const noHp = document.getElementById('noHp').value || '-';
+    const tipePengajuan = document.getElementById('resTipePemohon').innerText + ' (' + document.getElementById('resJenisPengajuan').innerText + ')';
+    const plafond = document.getElementById('resPlafonDiajukan').innerText;
+    const diterimaBersih = document.getElementById('resPencairan').innerText;
+    const tanggal = new Date().toLocaleDateString('id-ID');
+
+    if (!namaDebitur || namaDebitur === '-') {
+      alert("Silakan hitung simulasi terlebih dahulu sebelum merekam penawaran!");
+      return false;
+    }
+
+    let riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+
+    riwayat.push({
+      accountOfficer: aoNama,
+      namaDebitur: namaDebitur,
+      dinas: dinas,
+      cif: cif,
+      noHp: noHp,
+      tipePengajuan: tipePengajuan,
+      plafond: plafond,
+      diterimaBersih: diterimaBersih,
+      tanggal: tanggal
+    });
+
+    localStorage.setItem('riwayatPenawaranDebitur', JSON.stringify(riwayat));
+    return true;
+  }
+
   function kirimWhatsApp() {
-    let noHp = document.getElementById('noHp').value.trim().replace(/[^0-9]/g, '');
-    
+    let noHp = document.getElementById('noHp').value.replace(/[^0-9]/g, '');
     if (!noHp) {
-      alert("⚠️ Nomor Handphone / WhatsApp belum diisi di Data Pemohon!");
+      alert("Nomor WhatsApp calon debitur belum diisi!");
       return;
     }
 
@@ -1964,67 +2051,7 @@
       noHp = '62' + noHp.substring(1);
     }
 
-    const nama = document.getElementById('nama').value || 'Bapak/Ibu';
-    const username = document.getElementById('username').value;
-    const tipePemohon = document.getElementById('tipePemohon').value;
-    const jenisPengajuan = document.getElementById('jenisPengajuan').value;
-    const plafon = document.getElementById('resPlafonDiajukan').innerText;
-    const tenor = document.getElementById('resMaksTenor').innerText;
-    const angsuran = document.getElementById('resAngsuranBaru').innerText;
-    const pencairan = document.getElementById('resPencairan').innerText;
-
-    const pesanWA = `Assalamualaikum Bapak/ibu ${nama},\n\n Mohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} untuk skema ${jenisPengajuan} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
-
-    const linkWA = `https://wa.me/${noHp}?text=${pesanWA}`;
-    
-    window.open(linkWA, '_blank');
-  }
-  // --- LOGIK PENYIMPANAN RIWAYAT PENAWARAN ---
-function simpanPenawaranKeRiwayat() {
-  const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Admin';
-  const namaDebitur = document.getElementById('resNamaDebitur').innerText;
-  const dinas = document.getElementById('dinas').value || '-';
-  const cif = document.getElementById('cif').value || '-';
-  const noHp = document.getElementById('noHp').value || '-';
-  const tipePengajuan = document.getElementById('resTipePemohon').innerText + ' (' + document.getElementById('resJenisPengajuan').innerText + ')';
-  const plafond = document.getElementById('resPlafonDiajukan').innerText;
-  const diterimaBersih = document.getElementById('resPencairan').innerText;
-  const tanggal = new Date().toLocaleDateString('id-ID');
-
-  if (!namaDebitur || namaDebitur === '-') {
-    alert("Silakan hitung simulasi terlebih dahulu sebelum merekam penawaran!");
-    return false;
-  }
-
-  let riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
-
-  // Tambahkan data baru ke daftar
-  riwayat.push({
-    accountOfficer: aoNama,
-    namaDebitur: namaDebitur,
-    dinas: dinas,
-    cif: cif,
-    noHp: noHp,
-    tipePengajuan: tipePengajuan,
-    plafond: plafond,
-    diterimaBersih: diterimaBersih,
-    tanggal: tanggal
-  });
-
-  localStorage.setItem('riwayatPenawaranDebitur', JSON.stringify(riwayat));
-  return true;
-}
-
-// Update fungsi Kirim WhatsApp agar otomatis menyimpan ke riwayat penawaran
-function kirimWhatsApp() {
-  const noHp = document.getElementById('noHp').value.replace(/[^0-9]/g, '');
-  if (!noHp) {
-    alert("Nomor WhatsApp calon debitur belum diisi!");
-    return;
-  }
-
-  // Simpan data penawaran
-  simpanPenawaranKeRiwayat();
+    simpanPenawaranKeRiwayat();
 
     const sapaan = "Assalamualaikum";
     const nama = document.getElementById('nama').value || 'Bapak/Ibu';
@@ -2035,111 +2062,109 @@ function kirimWhatsApp() {
     const angsuran = document.getElementById('resAngsuranBaru').innerText;
     const pencairan = document.getElementById('resPencairan').innerText;
 
-    const pesanWA = `${sapaan} Bapak/Ibu ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman  ${tipePemohon} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
+    const pesanWA = `${sapaan} Bapak/Ibu ${nama},\n\nMohon maaf menggangu waktunya, Perkenalkan saya ${username} dari bank *bjb*, ijin menawarkan pengajuan pinjaman ${tipePemohon} dengan rincian sebagai berikut:\n\n*Plafon Diajukan:* ${plafon}\n*Tenor:* ${tenor}\n*Angsuran Per Bulan:* ${angsuran}\n*Estimasi Pencairan Bersih:* ${pencairan}\n\n_(Catatan: Simulasi ini tidak mengikat dan dapat berubah sesuai ketentuan bank)_.\n\nSebagai referensi tambahan, jika berkenan saya akan kirimkan rincian lebih detailnya.\n\nTerima kasih.`;
 
     const linkWA = `https://wa.me/${noHp}?text=${encodeURIComponent(pesanWA)}`;
     
-    window.open(linkWA, '_blank');}
-
-// --- FUNGSI EXPORT REPORT EXCEL ---
-function exportExcelReport() {
-  const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
-  
-  if (riwayat.length === 0) {
-    alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
-    return;
+    window.open(linkWA, '_blank');
   }
 
-  const dataExcel = riwayat.map((item, index) => ({
-    "No": index + 1,
-    "Nama Account Officer": item.accountOfficer,
-    "Nama Calon Debitur": item.namaDebitur,
-    "Dinas / Instansi": item.dinas,
-    "CIF": item.cif,
-    "No HP / WA": item.noHp,
-    "Tipe Pengajuan": item.tipePengajuan,
-    "Plafond": item.plafond,
-    "Diterima Bersih (Nett)": item.diterimaBersih,
-    "Tanggal Penawaran": item.tanggal
-  }));
+  function exportExcelReport() {
+    const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+    
+    if (riwayat.length === 0) {
+      alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
+      return;
+    }
 
-  const worksheet = XLSX.utils.json_to_sheet(dataExcel);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Daftar Penawaran");
+    const dataExcel = riwayat.map((item, index) => ({
+      "No": index + 1,
+      "Nama Account Officer": item.accountOfficer,
+      "Nama Calon Debitur": item.namaDebitur,
+      "Dinas / Instansi": item.dinas,
+      "CIF": item.cif,
+      "No HP / WA": item.noHp,
+      "Tipe Pengajuan": item.tipePengajuan,
+      "Plafond": item.plafond,
+      "Diterima Bersih (Nett)": item.diterimaBersih,
+      "Tanggal Penawaran": item.tanggal
+    }));
 
-  // Atur lebar kolom otomatis
-  worksheet['!cols'] = [
-    { wch: 5 },  { wch: 22 }, { wch: 25 }, { wch: 20 },
-    { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 18 },
-    { wch: 18 }, { wch: 15 }
-  ];
+    const worksheet = XLSX.utils.json_to_sheet(dataExcel);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Daftar Penawaran");
 
-  XLSX.writeFile(workbook, `Report_Penawaran_Debitur_${new Date().toISOString().slice(0, 10)}.xlsx`);
-}
+    worksheet['!cols'] = [
+      { wch: 5 },  { wch: 22 }, { wch: 25 }, { wch: 20 },
+      { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 18 },
+      { wch: 18 }, { wch: 15 }
+    ];
 
-// --- FUNGSI EXPORT REPORT PDF ---
-function exportPdfReport() {
-  const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
-  
-  if (riwayat.length === 0) {
-    alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
-    return;
+    XLSX.writeFile(workbook, `Report_Penawaran_Debitur_${new Date().toISOString().slice(0, 10)}.xlsx`);
   }
 
-  const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Account Officer';
+  function exportPdfReport() {
+    const riwayat = JSON.parse(localStorage.getItem('riwayatPenawaranDebitur') || '[]');
+    
+    if (riwayat.length === 0) {
+      alert("Belum ada riwayat penawaran yang disimpan/dikirim.");
+      return;
+    }
 
-  let rowsHtml = riwayat.map((item, idx) => `
-    <tr>
-      <td style="text-align:center; padding:6px; border:1px solid #cbd5e1;">${idx + 1}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1;"><b>${item.namaDebitur}</b></td>
-      <td style="padding:6px; border:1px solid #cbd5e1;">${item.dinas}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1;">${item.cif}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1;">${item.noHp}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1;">${item.tipePengajuan}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1; text-align:right;">${item.plafond}</td>
-      <td style="padding:6px; border:1px solid #cbd5e1; text-align:right; font-weight:bold; color:#059669;">${item.diterimaBersih}</td>
-    </tr>
-  `).join('');
+    const aoNama = document.getElementById('aoNamaDisplay').innerText || 'Account Officer';
 
-  const container = document.createElement('div');
-  container.style.padding = '15px';
-  container.style.fontFamily = 'Inter, sans-serif';
-  container.innerHTML = `
-    <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #1e40af; padding-bottom:10px;">
-      <h2 style="margin:0; color:#1e40af; font-size:16px;">LAPORAN DAFTAR PENAWARAN CALON DEBITUR</h2>
-      <p style="margin:4px 0 0 0; color:#475569; font-size:11px;">
-        Account Officer: <b>${aoNama}</b> | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}
-      </p>
-    </div>
-    <table style="width:100%; border-collapse:collapse; font-size:10px;">
-      <thead>
-        <tr style="background-color:#1e40af; color:white;">
-          <th style="padding:6px; border:1px solid #1e40af;">No</th>
-          <th style="padding:6px; border:1px solid #1e40af;">Nama Debitur</th>
-          <th style="padding:6px; border:1px solid #1e40af;">Dinas</th>
-          <th style="padding:6px; border:1px solid #1e40af;">CIF</th>
-          <th style="padding:6px; border:1px solid #1e40af;">No. HP</th>
-          <th style="padding:6px; border:1px solid #1e40af;">Tipe Pengajuan</th>
-          <th style="padding:6px; border:1px solid #1e40af;">Plafond</th>
-          <th style="padding:6px; border:1px solid #1e40af;">Diterima Bersih</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rowsHtml}
-      </tbody>
-    </table>
-  `;
+    let rowsHtml = riwayat.map((item, idx) => `
+      <tr>
+        <td style="text-align:center; padding:6px; border:1px solid #cbd5e1;">${idx + 1}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;"><b>${item.namaDebitur}</b></td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${item.dinas}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${item.cif}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${item.noHp}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${item.tipePengajuan}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1; text-align:right;">${item.plafond}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1; text-align:right; font-weight:bold; color:#059669;">${item.diterimaBersih}</td>
+      </tr>
+    `).join('');
 
-  const opt = {
-    margin: 8,
-    filename: `Report_Penawaran_Debitur_${aoNama.replace(/\s+/g, '_')}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-  };
+    const container = document.createElement('div');
+    container.style.padding = '15px';
+    container.style.fontFamily = 'Inter, sans-serif';
+    container.innerHTML = `
+      <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #1e40af; padding-bottom:10px;">
+        <h2 style="margin:0; color:#1e40af; font-size:16px;">LAPORAN DAFTAR PENAWARAN CALON DEBITUR</h2>
+        <p style="margin:4px 0 0 0; color:#475569; font-size:11px;">
+          Account Officer: <b>${aoNama}</b> | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}
+        </p>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:10px;">
+        <thead>
+          <tr style="background-color:#1e40af; color:white;">
+            <th style="padding:6px; border:1px solid #1e40af;">No</th>
+            <th style="padding:6px; border:1px solid #1e40af;">Nama Debitur</th>
+            <th style="padding:6px; border:1px solid #1e40af;">Dinas</th>
+            <th style="padding:6px; border:1px solid #1e40af;">CIF</th>
+            <th style="padding:6px; border:1px solid #1e40af;">No. HP</th>
+            <th style="padding:6px; border:1px solid #1e40af;">Tipe Pengajuan</th>
+            <th style="padding:6px; border:1px solid #1e40af;">Plafond</th>
+            <th style="padding:6px; border:1px solid #1e40af;">Diterima Bersih</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    `;
 
-  html2pdf().set(opt).from(container).save();
-}
+    const opt = {
+      margin: 8,
+      filename: `Report_Penawaran_Debitur_${aoNama.replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(container).save();
+  }
 </script>
 
 </body>
