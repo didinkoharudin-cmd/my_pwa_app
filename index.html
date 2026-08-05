@@ -1691,7 +1691,7 @@
     const totalAngsuranCombined = angsuranBaru + angsuranEksisting;
     const persenRpcAktual = (gaji > 0) ? ((totalAngsuranCombined / gaji) * 100).toFixed(1) : 0;
 
-    const biayaProvisi = (tenorBulan / 12) * (persenProvisi / 100) * pokokPinjaman;
+    const biayaProvisi = Math.ceil (tenorBulan / 12) * (persenProvisi / 100) * pokokPinjaman;
     
     const bungaBulanPertama = pokokPinjaman * i;
     const nilaiPertanggungan = pokokPinjaman + bungaBulanPertama;
