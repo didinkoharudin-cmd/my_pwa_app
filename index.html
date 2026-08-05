@@ -1005,7 +1005,7 @@
     if (tipe === 'Prapurnabakti G7G') {
       grpBungaKedua.style.display = 'flex';
       lblBunga.innerHTML = "Bunga Grace Period / Tahun (%):";
-      bungaInput.value = 8 ;
+      bungaInput.value = 12.5;
     } else {
       grpBungaKedua.style.display = 'none';
       lblBunga.innerHTML = "Bunga Dasar / Tahun (%):";
@@ -1695,7 +1695,7 @@
     
     const bungaBulanPertama = pokokPinjaman * i;
     const nilaiPertanggungan = pokokPinjaman + bungaBulanPertama;
-    const biayaAsuransi = nilaiPertanggungan * tarifAsuransi * (tenorBulan / 12); 
+    const biayaAsuransi = nilaiPertanggungan * tarifAsuransi * Math.ceil(tenorBulan / 12); 
 
     let asuransiPenambah = 0;
     const rowResAsuransiPenambah = document.getElementById('rowResAsuransiPenambah');
